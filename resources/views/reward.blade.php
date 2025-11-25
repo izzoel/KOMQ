@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Acak Kategori</title>
+    <title>Rewards</title>
     <style>
         :root {
             --size: 520px;
@@ -108,6 +108,36 @@
             box-shadow: 0px 4px 0px #b78100, 0px 6px 12px rgba(0, 0, 0, 0.35);
         }
 
+        .btnReward-3d {
+            background: linear-gradient(to bottom, #ffd131 0%, #e3a600 70%);
+            border: none;
+            border-radius: 20px;
+            padding: 18px 60px;
+            font-size: 22px;
+            font-weight: bold;
+            color: #5a3e00;
+            cursor: pointer;
+            box-shadow: 0px 8px 0px #b78100, 0px 10px 18px rgba(0, 0, 0, 0.35);
+            position: relative;
+            outline: none;
+        }
+
+        .btnReward-3d::after {
+            content: "";
+            position: absolute;
+            top: 6px;
+            left: 12px;
+            right: 12px;
+            height: 38%;
+            border-radius: 30px;
+            /* background: rgba(255, 255, 255, 0.45); */
+        }
+
+        .btnReward-3d:active {
+            transform: translateY(4px);
+            box-shadow: 0px 4px 0px #b78100, 0px 6px 12px rgba(0, 0, 0, 0.35);
+        }
+
 
         @keyframes floatY {
             0% {
@@ -154,6 +184,19 @@
             transform: translateY(-1px);
             filter: brightness(0.9);
             transition: box-shadow .1s, transform .1s, filter .12s;
+        }
+
+        #rewardBtn {
+            /* animation: floatY 1.2s ease-in-out infinite; */
+            will-change: transform;
+            /* transition: box-shadow .1s, transform .1s; */
+        }
+
+        #rewardBtn:hover {
+            animation-play-state: paused;
+            transform: translateY(-1px);
+            /* filter: brightness(0.9); */
+            /* transition: box-shadow .1s, transform .1s, filter .12s; */
         }
 
         .running-bg {
@@ -221,23 +264,50 @@
     </div>
 
     <div class="d-flex justify-content-center align-items-center flex-column" style="min-height: 100vh;">
-        <div class="" style="width:18rem;">
-            <img src="{{ asset('images/diskominfo.png') }}" class="card-img-top" alt="...">
-        </div>
+        <button id="" class="btnReward-3d mt-5"> SELAMAT ANDA BERHAK MENDAPATKAN DOORPRIZE</button>
+        {{-- <div class="card">
+            SELAMAT ANDA MENDAPATKAN DOORPRIZE
+        </div> --}}
+        {{-- <div class="card" style="width:18rem;"> --}}
+        {{-- <a href="/"> --}}
+        {{-- <img src="{{ asset('images/diskominfo.png') }}" class="card-img-top" alt="..."> --}}
+        {{-- </a> --}}
+        {{-- </div> --}}
         <div class="stage">
             <div id="sphere" class="sphere mt-5"></div>
         </div>
 
         <div class="controls">
-            <button id="spinBtn" class="btn-3d mt-5">Acak</button>
+            <button id="spinBtn" class="btn-3d mt-5">Mulai</button>
         </div>
 
         <div id="result" class="result-badge"> </div>
     </div>
-
-
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
+        crossorigin="anonymous"></script>
     <script>
-        const categories = ['Pemrograman', 'Artificial Intelligence', 'SuperApps', 'Internet Sehat', 'Internet Aman', 'GOVEM', 'LAPOR!'];
+        let categories = [];
+
+        $.ajax({
+            url: '/reward/list',
+            type: 'GET',
+            dataType: 'json',
+            success: function(res) {
+                categories = res;
+                console.log("Reward loaded:", categories);
+
+                createTags(); // ← bikin tag setelah data masuk
+                requestAnimationFrame(raf); // ← jalankan animasi sphere
+                // initSpin(categories); // ← aktifkan tombol spin
+            },
+            error: function() {
+                console.error("Gagal memuat rewards");
+            }
+        });
+
+
         const sphere = document.getElementById('sphere');
         const spinBtn = document.getElementById('spinBtn');
         const tags = [];
@@ -318,9 +388,6 @@
             requestAnimationFrame(raf);
         }
 
-        createTags();
-        requestAnimationFrame(raf);
-
         function spinAndPick(duration = 2200) {
             // reset highlight ketika spin dimulai
             if (lastSelected !== null) {
@@ -353,6 +420,8 @@
                 }
             }
             requestAnimationFrame(step);
+
+
         }
 
         let lastSelected = null;
@@ -374,7 +443,7 @@
                 tags.forEach(tag => tag.el.classList.remove('dim'));
 
                 const kategori = t.el.textContent;
-                window.location.href = `/quiz/${encodeURIComponent(kategori)}`;
+                // window.location.href = `/quiz/${encodeURIComponent(kategori)}`;
             }, 1600);
 
 
@@ -404,12 +473,42 @@
                 }
             }
             requestAnimationFrame(anim);
+
+            setTimeout(() => {
+                const hadiah = tag.el.textContent;
+
+                Swal.fire({
+                    title: "Selamat! Anda mendapatkan",
+                    html: `<span class="badge bg-warning text-dark" style="font-size: 1.4rem; padding: 8px 14px;">${hadiah}</span>`,
+                    icon: "success",
+                    showConfirmButton: true,
+                    allowOutsideClick: false,
+                }).then(() => {
+
+                    // Kurangi stok reward lewat AJAX
+                    $.ajax({
+                        url: "/reward/used",
+                        type: "POST",
+                        data: {
+                            reward: hadiah,
+                            _token: '{{ csrf_token() }}'
+                        },
+                        success: function() {
+                            // setelah stok dikurangi baru redirect
+                            window.location.href = "/";
+                        }
+                    });
+
+                });
+
+            }, 1000);
         }
+
 
         spinBtn.addEventListener('click', () => spinAndPick());
     </script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
-        crossorigin="anonymous"></script>
+
+
 </body>
 
 </html>

@@ -198,25 +198,104 @@
             filter: brightness(0.9);
             transition: box-shadow .1s, transform .1s, filter .12s;
         }
+
+        /* Default desktop (biarkan seperti sekarang) */
+
+        /* RESPONSIVE UNTUK MOBILE */
+        @media (max-width: 768px) {
+            body {
+                background-size: cover;
+                background-position: center;
+            }
+
+            .btn-kembali {
+                font-size: 14px;
+                padding: 6px 14px;
+                position: absolute;
+                top: 10px;
+                left: 10px;
+            }
+
+            .card {
+                width: 100% !important;
+                margin: 0 10px;
+            }
+
+            #countdown {
+                font-size: 24px;
+            }
+
+            .blockquote p {
+                font-size: 22px !important;
+                text-align: center;
+            }
+
+            .blockquote-footer {
+                font-size: 16px !important;
+                text-align: center;
+            }
+
+            .pilih {
+                width: 100% !important;
+            }
+
+            .quiz-option-left {
+                font-size: 20px !important;
+                padding: 6px 12px;
+            }
+
+            .quiz-option-right {
+                font-size: 20px !important;
+                padding: 12px 10px;
+            }
+
+            img.card-img-top {
+                width: 180px;
+                margin: auto;
+                display: block;
+            }
+        }
+
+        /* RESPONSIVE UNTUK DESKTOP / LAYAR LEBAR */
+        @media (min-width: 992px) {
+            .card {
+                max-width: 900px;
+                /* tidak terlalu melebar */
+                width: 100%;
+            }
+
+            .wrapper-quiz {
+                max-width: 900px;
+                width: 100%;
+                margin: auto;
+            }
+
+            .pilih {
+                /* tetap 2 kolom di desktop */
+                width: 50%;
+            }
+        }
     </style>
 
 </head>
 
 <body style="background-image: url('{{ asset('images/quiz-bg.jpg') }}'); background-size: cover; background-position: center; background-repeat: no-repeat; min-height: 100vh;">
-    <div class="m-4 mb-0">
+    {{-- <div class="m-4 mb-0">
         <a href="/">
             <button id="spinBtn" class="btn-kembali m-3">Kembali</button>
         </a>
-    </div>
+    </div> --}}
 
     <div class="d-flex justify-content-center align-items-center flex-column" style="min-height: 100vh;">
-        <div class="mb-5" style="width:18rem;">
+        <div class="mb-5 mt-4" style="width:18rem;">
             <a href="/">
 
                 <img src="{{ asset('images/diskominfo.png') }}" class="card-img-top" alt="...">
             </a>
         </div>
-        <div class="card shadow rounded-4" style="width: 75rem;">
+        {{-- <div class="card shadow rounded-4" style="width: 75rem;"> --}}
+        <div class="card shadow rounded-4 mx-auto">
+
             <div class="card-header text-center position-relative p-3">
                 <div id="countdown" class="fw-bold fs-3">20</div>
                 <div class="timer-bar-container">
@@ -232,7 +311,11 @@
             </div>
         </div>
 
-        <div class="mt-3" style="width: 75rem;">
+        {{-- <div class="mt-3" style="width: 75rem;"> --}}
+        {{-- <div class="mt-3 w-100"> --}}
+        <div class="mt-3 wrapper-quiz mx-auto">
+
+
             <div class="row g-2">
                 @foreach ($pilihan as $label => $isi)
                     <div class="col-6 pilih">
@@ -401,7 +484,10 @@
                             timer: 5000,
                             timerProgressBar: true,
                             showConfirmButton: false,
-                            allowOutsideClick: false
+                            allowOutsideClick: false,
+                            didClose: () => {
+                                window.location.href = "/reward";
+                            }
                         });
 
                     } else {

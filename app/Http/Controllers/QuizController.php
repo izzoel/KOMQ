@@ -65,9 +65,9 @@ class QuizController extends Controller
     /**
     * Show the form for editing the specified resource.
     */
-    public function edit(Quiz $quiz)
+    public function reward(Quiz $quiz)
     {
-        //
+       return view('reward');
     }
 
     /**
