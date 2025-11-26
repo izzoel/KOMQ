@@ -43,22 +43,13 @@ Aplikasi otomatis menyimpan tanggal reset reward dalam file
 Proyek KOMQ dibangun menggunakan: - Laravel - Bootstrap 5 -
 SweetAlert2 - Eloquent ORM - AJAX / Fetch API - Laravel Filesystem
 
-## 📂 Struktur Proyek
+## 📂 Tampilan Aplikasi
+<img width="1440" height="900" alt="Screenshot 2025-11-26 at 11 55 29" src="https://github.com/user-attachments/assets/1452f164-dc99-44fa-859f-4a3c05583c50" />
+<img width="1440" height="900" alt="Screenshot 2025-11-26 at 11 55 59" src="https://github.com/user-attachments/assets/6d37b608-addc-44ee-897c-f301cd0ee542" />
+<img width="1440" height="900" alt="Screenshot 2025-11-26 at 11 56 13" src="https://github.com/user-attachments/assets/97b59ee8-b708-49f6-b3b5-5203db482b45" />
+<img width="1440" height="900" alt="Screenshot 2025-11-26 at 11 58 03" src="https://github.com/user-attachments/assets/0b9e2880-2899-49c4-bf92-2cb910456a13" />
+<img width="1440" height="900" alt="Screenshot 2025-11-26 at 11 58 11" src="https://github.com/user-attachments/assets/6febedc2-760a-425f-bd20-c6c701439ba6" />
 
-    app/
-     ├── Http/Controllers/
-     │   ├── QuizController.php
-     │   └── AdminController.php
-    resources/
-     ├── views/
-     │   ├── quiz.blade.php
-     │   ├── wheel.blade.php
-     │   └── admin/
-    storage/
-     └── app/
-         └── last_reward_reset.txt
-    public/
-     └── assets/
 
 ## 👥 Kontributor
 
