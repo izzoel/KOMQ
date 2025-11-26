@@ -17,6 +17,7 @@ Route::get('/logout', [AdminController::class, 'logout'])->name('logout');
 // Route::get('/admin', [AdminController::class, 'index'])->middleware('autentifikasi');
 
 Route::get('/admin', [AdminController::class, 'index']);
+Route::get('/admin/set', [RewardController::class, 'set'])->name('reward.set');
 
 // Tampilkan soal
 Route::get('/quiz', [QuizController::class, 'index'])->name('quiz.take');
@@ -24,7 +25,6 @@ Route::get('/quiz/{kategori}', [QuizController::class, 'show'])->name('quiz.show
 Route::get('/reward', [QuizController::class, 'reward'])->name('quiz.reward');
 Route::get('/reward/list', [RewardController::class, 'show'])->name('reward.list');
 Route::get('/reward/{id}/edit', [RewardController::class, 'editReward']);
-Route::get('/reward/set', [RewardController::class, 'set'])->name('reward.set');
 
 Route::post('/reward/add/{id}', [RewardController::class, 'add']);
 Route::post('/reward/minus/{id}', [RewardController::class, 'minus']);
