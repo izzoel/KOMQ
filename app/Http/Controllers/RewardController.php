@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Reward;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class RewardController extends Controller
 {
@@ -21,6 +23,10 @@ class RewardController extends Controller
         $reward = Reward::findOrFail($id);
         $reward->stock += 1;
         $reward->save();
+
+        $log = "[" . now()->format('Y-m-d H:i:s') . "] Admin melakukan + stok ". $reward->name;
+        Storage::put('admin_logs.txt', $log);
+
         return response()->json(['success' => true]);
     }
 
@@ -31,6 +37,9 @@ class RewardController extends Controller
             $reward->stock -= 1;
             $reward->save();
         }
+        $log = "[" . now()->format('Y-m-d H:i:s') . "] Admin melakukan - stok ". $reward->name;
+        Storage::put('admin_logs.txt', $log);
+
         return response()->json(['success' => true]);
     }
 
@@ -46,6 +55,8 @@ class RewardController extends Controller
                 $reward->stock_temp = 0;
                 $reward->is_aktive = 1;
             }
+            $log = "[" . now()->format('Y-m-d H:i:s') . "] Admin melakukan on reward". $reward->name;
+            Storage::put('admin_logs.txt', $log);
         }
 
         // SWITCH OFF (nonaktif)
@@ -56,6 +67,9 @@ class RewardController extends Controller
                 $reward->stock = 0;
                 $reward->is_aktive = 0;
             }
+
+            $log = "[" . now()->format('Y-m-d H:i:s') . "] Admin melakukan off reward". $reward->name;
+            Storage::put('admin_logs.txt', $log);
         }
 
         $reward->save();
@@ -67,17 +81,74 @@ class RewardController extends Controller
         ]);
     }
 
-    /**
-    * Show the form for creating a new resource.
-    */
-    public function create()
+    public function set()
     {
-        //
+        $flagFile = storage_path('app/last_reward_reset.txt');
+        $today = now('Asia/Makassar')->toDateString();
+
+        // Cek apakah sudah reset hari ini
+        if (file_exists($flagFile)) {
+            $lastDate = trim(file_get_contents($flagFile));
+            if ($lastDate === $today) {
+                return "Reward sudah di-set hari ini ($today)";
+            }
+        }
+
+        // TRUNCATE TABLE REWARD
+        DB::table('rewards')->truncate();
+
+        // DATA DEFAULT (dengan stock_temp & is_aktive)
+        $defaultRewards = [
+            [
+                'name'        => 'Payung',
+                'stock'       => 10,
+                'stock_temp'  => 0,
+                'is_aktive'   => 1,
+                'created_at'  => now(),
+                'updated_at'  => now(),
+            ],
+            [
+                'name'        => 'Indomie',
+                'stock'       => 20,
+                'stock_temp'  => 0,
+                'is_aktive'   => 1,
+                'created_at'  => now(),
+                'updated_at'  => now(),
+            ],
+            [
+                'name'        => 'Minyak Goreng',
+                'stock'       => 5,
+                'stock_temp'  => 0,
+                'is_aktive'   => 1,
+                'created_at'  => now(),
+                'updated_at'  => now(),
+            ],
+            [
+                'name'        => 'Gula',
+                'stock'       => 5,
+                'stock_temp'  => 0,
+                'is_aktive'   => 1,
+                'created_at'  => now(),
+                'updated_at'  => now(),
+            ],
+            [
+                'name'        => 'Snack',
+                'stock'       => 5,
+                'stock_temp'  => 0,
+                'is_aktive'   => 1,
+                'created_at'  => now(),
+                'updated_at'  => now(),
+            ],
+        ];
+
+        DB::table('rewards')->insert($defaultRewards);
+
+        // Simpan tanggal hari ini
+        file_put_contents($flagFile, $today);
+
+        return "Reward berhasil di-reset & diset ulang untuk tanggal $today";
     }
 
-    /**
-    * Store a newly created resource in storage.
-    */
     public function store(Request $request)
     {
         $request->validate([
@@ -91,21 +162,18 @@ class RewardController extends Controller
             'is_aktive' => 0,
         ]);
 
+        $log = "[" . now()->format('Y-m-d H:i:s') . "] Admin melakukan tambah reward";
+        Storage::put('admin_logs.txt', $log);
+
         return response()->json(['success' => true]);
     }
 
-    /**
-    * Display the specified resource.
-    */
     public function show(Reward $reward)
     {
         return Reward::where('stock', '>', 0)->pluck('name');
 
     }
 
-    /**
-    * Show the form for editing the specified resource.
-    */
     public function edit(Request $request,Reward $reward)
     {
         $request->validate([
@@ -120,27 +188,36 @@ class RewardController extends Controller
             'stock' => $request->stock,
         ]);
 
+        $log = "[" . now()->format('Y-m-d H:i:s') . "] Admin melakukan edit reward " . $reward->name;
+        Storage::put('admin_logs.txt', $log);
+
         return response()->json([
             'success' => true,
             'message' => 'Reward berhasil diubah'
         ]);
     }
+
     public function editReward(Request $request,Reward $reward)
     {
         return Reward::find($request->id);
     }
 
-    /**
-    * Update the specified resource in storage.
-    */
     public function update(Request $request, Reward $reward)
     {
+        // Cari reward berdasarkan name
         $reward = Reward::where('name', $request->reward)->first();
 
         if ($reward && $reward->stock > 0) {
-            // return response()->json($reward->stock);
+
+            // Kurangi stok
             $reward->stock -= 1;
             $reward->save();
+
+            // Tulis log ke file reward_logs.txt
+            $log = "[" . now()->format('Y-m-d H:i:s') . "] "
+            . "Anonimus: " . $reward->name . " x1 | Sisa stock: " . $reward->stock;
+
+            Storage::put('reward_logs.txt', $log);
         }
 
         return response()->json(['success' => true]);

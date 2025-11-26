@@ -215,7 +215,7 @@
     <div class="d-flex justify-content-center align-items-center flex-column mt-5">
         <div class="card" style="width: 80%">
             <div class="card-header">
-                Admin Panel | {{ now()->translatedFormat('d F Y H:i') }}
+                Admin Panel | {{ now()->translatedFormat('d F Y H:i') }} |
             </div>
             <div class="card-body">
                 <h5 class="card-title">Reward List

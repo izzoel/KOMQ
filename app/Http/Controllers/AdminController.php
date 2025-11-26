@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\Reward;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
 
 class AdminController extends Controller
 {
@@ -17,51 +18,20 @@ class AdminController extends Controller
         return view('admin', compact('rewards'));
     }
 
-    /**
-    * Show the form for creating a new resource.
-    */
-    public function create()
+    public function login()
     {
-        //
+        return view('login');
     }
 
-    /**
-    * Store a newly created resource in storage.
-    */
-    public function store(Request $request)
+    public function proses(Request $request)
     {
-        //
-    }
+        $passwordBenar = "komq"; // ganti sesuai password kamu
 
-    /**
-    * Display the specified resource.
-    */
-    public function show(User $user)
-    {
-        //
-    }
+        if ($request->password === $passwordBenar) {
+            session(['admin_login' => true]);
+            return redirect('/admin');
+        }
 
-    /**
-    * Show the form for editing the specified resource.
-    */
-    public function edit(User $user)
-    {
-        //
-    }
-
-    /**
-    * Update the specified resource in storage.
-    */
-    public function update(Request $request, User $user)
-    {
-        //
-    }
-
-    /**
-    * Remove the specified resource from storage.
-    */
-    public function destroy(User $user)
-    {
-        //
+        return back()->with('gagal', true);
     }
 }
