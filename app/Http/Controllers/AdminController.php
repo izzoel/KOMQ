@@ -7,16 +7,19 @@ use App\Models\Reward;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Storage;
 
 class AdminController extends Controller
 {
-    /**
-    * Display a listing of the resource.
-    */
     public function index()
     {
         $rewards = Reward::all();
-        return view('admin', compact('rewards'));
+
+        $path = storage_path('app/last_reward_reset.txt');
+        $sudahReset = file_exists($path);
+        $tanggalReset = $sudahReset ? trim(file_get_contents($path)) : null;
+
+        return view('admin', compact('rewards','sudahReset', 'tanggalReset'));
     }
 
     public function login()

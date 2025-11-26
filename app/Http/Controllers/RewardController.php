@@ -146,7 +146,11 @@ class RewardController extends Controller
         // Simpan tanggal hari ini
         file_put_contents($flagFile, $today);
 
-        return "Reward berhasil di-reset & diset ulang untuk tanggal $today";
+        return response()->json([
+            'success' => true,
+            'message' => "Reward berhasil di-reset & diset ulang untuk tanggal $today"
+        ]);
+
     }
 
     public function store(Request $request)
