@@ -39,15 +39,6 @@ class AdminController extends Controller
 
     public function proses(Request $request)
     {
-        // $passwordBenar = "komq"; // ganti sesuai password kamu
-
-        // if ($request->password === $passwordBenar) {
-        //     session(['admin_login' => true]);
-        //     return redirect('/admin');
-        // }
-
-        // return back()->with('gagal', true);
-
         $credentials = $request->only('name', 'password');
 
         if (Auth::attempt($credentials)) {

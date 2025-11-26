@@ -47,28 +47,23 @@ class RewardController extends Controller
     {
         $reward = Reward::findOrFail($request->id);
 
-        // SWITCH ON (aktif)
         if ($request->status == 1) {
-            // jika stock masih kosong, kembalikan dari stock_temp
             if ($reward->stock == 0 && $reward->stock_temp > 0) {
                 $reward->stock = $reward->stock_temp;
                 $reward->stock_temp = 0;
                 $reward->is_aktive = 1;
             }
-            $log = "[" . now()->format('Y-m-d H:i:s') . "] Admin melakukan on reward". $reward->name;
+            $log = "[" . now()->format('Y-m-d H:i:s') . "] Admin melakukan on reward ". $reward->name . ' stok:' . $reward->stock;
             Storage::put('admin_logs.txt', $log);
         }
 
-        // SWITCH OFF (nonaktif)
         else {
-            // pindahkan stock → stock_temp
             if ($reward->stock > 0) {
                 $reward->stock_temp = $reward->stock;
                 $reward->stock = 0;
                 $reward->is_aktive = 0;
             }
-
-            $log = "[" . now()->format('Y-m-d H:i:s') . "] Admin melakukan off reward". $reward->name;
+            $log = "[" . now()->format('Y-m-d H:i:s') . "] Admin melakukan off reward ". $reward->name. ' stok:' . $reward->stock;
             Storage::put('admin_logs.txt', $log);
         }
 
@@ -227,9 +222,6 @@ class RewardController extends Controller
         return response()->json(['success' => true]);
     }
 
-    /**
-    * Remove the specified resource from storage.
-    */
     public function destroy(Reward $reward)
     {
         //
