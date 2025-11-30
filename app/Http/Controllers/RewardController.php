@@ -96,7 +96,7 @@ class RewardController extends Controller
         $defaultRewards = [
             [
                 'name'        => 'Payung',
-                'stock'       => 2,
+                'stock'       => 1,
                 'stock_temp'  => 0,
                 'is_aktive'   => 1,
                 'created_at'  => now(),
@@ -104,7 +104,7 @@ class RewardController extends Controller
             ],
             [
                 'name'        => 'Indomie',
-                'stock'       => 17,
+                'stock'       => 8,
                 'stock_temp'  => 0,
                 'is_aktive'   => 1,
                 'created_at'  => now(),
@@ -112,7 +112,7 @@ class RewardController extends Controller
             ],
             [
                 'name'        => 'Minyak Goreng',
-                'stock'       => 5,
+                'stock'       => 3,
                 'stock_temp'  => 0,
                 'is_aktive'   => 1,
                 'created_at'  => now(),
@@ -120,7 +120,7 @@ class RewardController extends Controller
             ],
             [
                 'name'        => 'Gula',
-                'stock'       => 5,
+                'stock'       => 3,
                 'stock_temp'  => 0,
                 'is_aktive'   => 1,
                 'created_at'  => now(),
@@ -128,7 +128,7 @@ class RewardController extends Controller
             ],
             [
                 'name'        => 'Snack',
-                'stock'       => 20,
+                'stock'       => 10,
                 'stock_temp'  => 0,
                 'is_aktive'   => 1,
                 'created_at'  => now(),
@@ -136,7 +136,7 @@ class RewardController extends Controller
             ],
             [
                 'name'        => 'Gantungan Kunci',
-                'stock'       => 5,
+                'stock'       => 3,
                 'stock_temp'  => 0,
                 'is_aktive'   => 1,
                 'created_at'  => now(),

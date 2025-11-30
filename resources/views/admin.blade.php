@@ -94,7 +94,12 @@
     <div class="d-flex justify-content-center align-items-center flex-column mt-5">
         <div class="card" style="width: 80%">
             <div class="card-header">
-                <span class="badge bg-secondary">Admin Panel</span> | <span class="badge bg-warning text-dark">{{ now()->translatedFormat('d F Y') }}</span>
+                <button class="btn btn-secondary btn-sm">Admin Panel</button> | <form action="{{ route('reward.set') }}" method="GET" style="display:inline;">
+                    <button type="submit" class="btn btn-warning btn-sm">
+                        {{ now()->translatedFormat('d F Y') }}
+                    </button>
+                </form>
+
                 {{-- | --}}
                 {{-- @if ($sudahReset) --}}
                 {{-- <a href="/admin/set" class="badge bg-danger">Reset</a> {{ \Carbon\Carbon::parse($tanggalReset)->translatedFormat('d F Y H:i') }} --}}
