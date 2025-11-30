@@ -238,7 +238,7 @@
 
 
     <script>
-        const categories = ['Pemrograman', 'Artificial Intelligence', 'Internet Sehat', 'GOVEM', 'LAPOR!'];
+        const categories = ['Pemrograman', 'Artificial Intelligence', 'SuperApps', 'Internet Sehat', 'GOVEM', 'LAPOR!'];
         const sphere = document.getElementById('sphere');
         const spinBtn = document.getElementById('spinBtn');
         const tags = [];
