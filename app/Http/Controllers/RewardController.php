@@ -54,7 +54,7 @@ class RewardController extends Controller
                 $reward->is_aktive = 1;
             }
             $log = "[" . now()->format('Y-m-d H:i:s') . "] Admin melakukan on reward ". $reward->name . ' stok:' . $reward->stock;
-            Storage::put('admin_logs.txt', $log);
+            Storage::append('admin_logs.txt', $log);
         }
 
         else {
@@ -64,7 +64,7 @@ class RewardController extends Controller
                 $reward->is_aktive = 0;
             }
             $log = "[" . now()->format('Y-m-d H:i:s') . "] Admin melakukan off reward ". $reward->name. ' stok:' . $reward->stock;
-            Storage::put('admin_logs.txt', $log);
+            Storage::append('admin_logs.txt', $log);
         }
 
         $reward->save();
@@ -79,82 +79,71 @@ class RewardController extends Controller
     public function set()
     {
         $flagFile = storage_path('app/last_reward_reset.txt');
-        $today = now('Asia/Makassar')->toDateString();
 
-        // Cek apakah sudah reset hari ini
+        $now       = now('Asia/Makassar');
+        $today     = $now->toDateString();
+        $timeNow   = $now->format('H:i');
+        $resetTime = "17:50"; // jam reset harian
+
+        // ---- BACA FILE FLAG JIKA ADA ----
+        $lastDate = null;
+        $lastTime = null;
+
         if (file_exists($flagFile)) {
-            $lastDate = trim(file_get_contents($flagFile));
-            if ($lastDate === $today) {
-                return "Reward sudah di-set hari ini ($today)";
-            }
+            $content = explode("|", trim(file_get_contents($flagFile)));
+
+            $lastDate = $content[0] ?? null;
+            $lastTime = $content[1] ?? null;
         }
 
-        // TRUNCATE TABLE REWARD
+        // ---- KONDISI 1: RESET SAAT BERGANTI HARI ----
+        $shouldReset = false;
+
+        if ($lastDate !== $today) {
+            $shouldReset = true;
+        }
+
+        // ---- KONDISI 2: RESET OTOMATIS JAM 17:50 ----
+        if ($timeNow >= $resetTime && $lastDate === $today && $lastTime !== $resetTime) {
+            $shouldReset = true;
+        }
+
+        // Jika tidak ada kondisi yang terpenuhi, jangan reset
+        if (! $shouldReset) {
+            return response()->json([
+                'success' => false,
+                'message' => "Reward sudah di-set hari ini",
+            ]);
+        }
+
+        // ---- RESET REWARD ----
         DB::table('rewards')->truncate();
 
-        // DATA DEFAULT (dengan stock_temp & is_aktive)
         $defaultRewards = [
-            [
-                'name'        => 'Payung',
-                'stock'       => 1,
-                'stock_temp'  => 0,
-                'is_aktive'   => 1,
-                'created_at'  => now(),
-                'updated_at'  => now(),
-            ],
-            [
-                'name'        => 'Indomie',
-                'stock'       => 8,
-                'stock_temp'  => 0,
-                'is_aktive'   => 1,
-                'created_at'  => now(),
-                'updated_at'  => now(),
-            ],
-            [
-                'name'        => 'Minyak Goreng',
-                'stock'       => 3,
-                'stock_temp'  => 0,
-                'is_aktive'   => 1,
-                'created_at'  => now(),
-                'updated_at'  => now(),
-            ],
-            [
-                'name'        => 'Gula',
-                'stock'       => 3,
-                'stock_temp'  => 0,
-                'is_aktive'   => 1,
-                'created_at'  => now(),
-                'updated_at'  => now(),
-            ],
-            [
-                'name'        => 'Snack',
-                'stock'       => 10,
-                'stock_temp'  => 0,
-                'is_aktive'   => 1,
-                'created_at'  => now(),
-                'updated_at'  => now(),
-            ],
-            [
-                'name'        => 'Gantungan Kunci',
-                'stock'       => 3,
-                'stock_temp'  => 0,
-                'is_aktive'   => 1,
-                'created_at'  => now(),
-                'updated_at'  => now(),
-            ],
+            ['name'=>'Payung','stock'=>1,'stock_temp'=>0,'is_aktive'=>1],
+            ['name'=>'Indomie','stock'=>8,'stock_temp'=>0,'is_aktive'=>1],
+            ['name'=>'Minyak Goreng','stock'=>3,'stock_temp'=>0,'is_aktive'=>1],
+            ['name'=>'Gula','stock'=>3,'stock_temp'=>0,'is_aktive'=>1],
+            ['name'=>'Snack','stock'=>10,'stock_temp'=>0,'is_aktive'=>1],
+            ['name'=>'Gantungan Kunci','stock'=>3,'stock_temp'=>0,'is_aktive'=>1],
         ];
+
+        foreach ($defaultRewards as &$r) {
+            $r['created_at'] = $now;
+            $r['updated_at'] = $now;
+        }
 
         DB::table('rewards')->insert($defaultRewards);
 
-        // Simpan tanggal hari ini
-        file_put_contents($flagFile, $today);
+        // ---- SIMPAN TANGGAL & JAM RESET ----
+        file_put_contents($flagFile, $today . "|" . ($timeNow >= $resetTime ? $resetTime : $timeNow));
 
         return response()->json([
             'success' => true,
-            'message' => "Reward berhasil di-reset & diset ulang untuk tanggal $today"
+            'message' => "Reward berhasil di-reset pada " . $now->format('Y-m-d H:i'),
         ]);
-
     }
+
 
     public function store(Request $request)
     {
@@ -170,7 +159,7 @@ class RewardController extends Controller
         ]);
 
         $log = "[" . now()->format('Y-m-d H:i:s') . "] Admin melakukan tambah reward";
-        Storage::put('admin_logs.txt', $log);
+        Storage::append('admin_logs.txt', $log);
 
         return response()->json(['success' => true]);
     }
@@ -196,7 +185,7 @@ class RewardController extends Controller
         ]);
 
         $log = "[" . now()->format('Y-m-d H:i:s') . "] Admin melakukan edit reward " . $reward->name;
-        Storage::put('admin_logs.txt', $log);
+        Storage::append('admin_logs.txt', $log);
 
         return response()->json([
             'success' => true,
@@ -224,7 +213,7 @@ class RewardController extends Controller
             $log = "[" . now()->format('Y-m-d H:i:s') . "] "
             . "Anonimus: " . $reward->name . " x1 | Sisa stock: " . $reward->stock;
 
-            Storage::put('reward_logs.txt', $log);
+            Storage::append('reward_logs.txt', $log);
         }
 
         return response()->json(['success' => true]);
