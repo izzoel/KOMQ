@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Quiz;
+use App\Models\Reward;
 use Illuminate\Http\Request;
 
 class QuizController extends Controller
@@ -12,7 +13,8 @@ class QuizController extends Controller
     */
     public function index()
     {
-        return view('acak');
+        $totalStok = Reward::sum('stock');
+        return view('acak', compact('totalStok'));
     }
 
     /**
@@ -51,7 +53,8 @@ class QuizController extends Controller
 
     public function reward(Quiz $quiz)
     {
-       return view('reward');
+        $totalStok = Reward::sum('stock');
+       return view('reward', compact('totalStok'));
     }
 
     /**

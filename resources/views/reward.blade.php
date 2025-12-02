@@ -78,6 +78,43 @@
             margin-top: 20px;
         }
 
+        .btn-kembali {
+            background: linear-gradient(to bottom, #ffd131 0%, #e3a600 70%);
+            border: none;
+            border-radius: 24px;
+            padding: 8px 22px;
+            font-size: 16px;
+            font-weight: bold;
+            color: #5a3e00;
+            cursor: pointer;
+            box-shadow: 0px 5px 0px #b78100, 0px 6px 10px rgba(0, 0, 0, 0.35);
+            position: absolute;
+            /* posisi absolut */
+            /* top: 20px; */
+            /* jarak dari atas */
+            left: 20px;
+            /* jarak dari kiri */
+            outline: none;
+            z-index: 9999;
+            /* pastikan selalu di atas elemen lain */
+        }
+
+        .btn-kembali::after {
+            content: "";
+            position: absolute;
+            top: 4px;
+            left: 6px;
+            right: 6px;
+            height: 20%;
+            border-radius: 18px;
+            background: rgba(255, 255, 255, 0.45);
+        }
+
+        .btn-kembali:active {
+            transform: translateY(3px);
+            box-shadow: 0px 2px 0px #b78100, 0px 4px 7px rgba(0, 0, 0, 0.35);
+        }
+
         .btn-3d {
             background: linear-gradient(to bottom, #ffd131 0%, #e3a600 70%);
             border: none;
@@ -253,7 +290,11 @@
 
 <body
     style="background-image: url('{{ asset('images/quiz-bg.jpg') }}'); background-size: cover; background-position: center; background-repeat: no-repeat; min-height: 100vh; position: relative;">
-
+    {{-- <div class="m-4 mb-0">
+    <a href="/">
+        <button id="spinBtn" class="btn-kembali m-3">Kembali</button>
+    </a>
+</div> --}}
     <div style="text-align: center;">
         <img src="{{ asset('images/c3.svg') }}"
             style="height: 60vh; position: absolute;top: 50%;left: 50%;transform: translate(-50%, -50%);z-index: 0;opacity: 0.55;animation: rotateCircleCC 15s linear infinite;">
@@ -264,22 +305,22 @@
     </div>
 
     <div class="d-flex justify-content-center align-items-center flex-column" style="min-height: 100vh;">
-        <button id="" class="btnReward-3d mt-5"> SELAMAT ANDA BERHAK MENDAPATKAN DOORPRIZE</button>
-        {{-- <div class="card">
-            SELAMAT ANDA MENDAPATKAN DOORPRIZE
-        </div> --}}
-        {{-- <div class="card" style="width:18rem;"> --}}
-        {{-- <a href="/"> --}}
-        {{-- <img src="{{ asset('images/diskominfo.png') }}" class="card-img-top" alt="..."> --}}
-        {{-- </a> --}}
-        {{-- </div> --}}
+        <a href="/">
+            <button id="" class="btnReward-3d mt-5"> SELAMAT ANDA BERHAK MENDAPATKAN DOORPRIZE</button>
+        </a>
         <br>
         <div class="stage">
             <div id="sphere" class="sphere mt-5"></div>
         </div>
 
         <div class="controls">
-            <button id="spinBtn" class="btn-3d mt-5">Mulai</button>
+            @if ($totalStok > 0)
+                <button id="spinBtn" class="btn-3d mt-5">Mulai</button>
+            @elseif ($totalStok == 0)
+                <a href="/">
+                    <button id="spinBtn" class="btn-3d mt-5">Kembali</button>
+                </a>
+            @endif
         </div>
 
         <div id="result" class="result-badge"> </div>

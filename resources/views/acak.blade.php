@@ -201,6 +201,36 @@
                 transform: translateX(0);
             }
         }
+
+        .ketReward {
+            position: absolute;
+            top: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-weight: 700;
+            color: red;
+            text-shadow: 0 0 1px white;
+            white-space: nowrap;
+            z-index: 10;
+        }
+
+        .ketAnimasi {
+            animation: kelapKelip .6s ease-in-out infinite;
+        }
+
+        @keyframes kelapKelip {
+            0% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0;
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
     </style>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
@@ -223,7 +253,18 @@
     <div class="d-flex justify-content-center align-items-center flex-column" style="min-height: 100vh;">
         <div class="" style="width:18rem;">
             <img src="{{ asset('images/diskominfo.png') }}" class="card-img-top" alt="...">
+            @if ($totalStok > 0)
+                <span class="fs-2 ketReward" style="color: rgb(20, 4, 4);">
+                    SISA DOORPRIZE: {{ $totalStok }}
+                </span>
+            @elseif ($totalStok == 0)
+                <span class="fs-2 ketReward ketAnimasi">
+                    MOHON MAAF DOORPRIZE SUDAH HABIS
+                </span>
+            @endif
+
         </div>
+
         <br>
         <div class="stage">
             <div id="sphere" class="sphere mt-5"></div>
