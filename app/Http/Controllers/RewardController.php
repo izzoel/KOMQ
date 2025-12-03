@@ -80,43 +80,40 @@ class RewardController extends Controller
     {
         $flagFile = storage_path('app/last_reward_reset.txt');
 
-        $now       = now('Asia/Makassar');
-        $today     = $now->toDateString();
-        $timeNow   = $now->format('H:i');
-        $resetTime = "17:50"; // jam reset harian
+        $now   = now('Asia/Makassar');
+        $today = $now->toDateString();
+        $time  = $now->format('H:i');
 
-        // ---- BACA FILE FLAG JIKA ADA ----
+        $resetTime = "18:10";
+
+        // === BACA LOG RESET TERAKHIR ===
         $lastDate = null;
         $lastTime = null;
 
         if (file_exists($flagFile)) {
             $content = explode("|", trim(file_get_contents($flagFile)));
-
             $lastDate = $content[0] ?? null;
             $lastTime = $content[1] ?? null;
         }
 
-        // ---- KONDISI 1: RESET SAAT BERGANTI HARI ----
-        $shouldReset = false;
+        // === CEK APAKAH PERLU RESET OTOMATIS ===
+        $needAutoReset = false;
 
+        // Reset otomatis setiap hari
         if ($lastDate !== $today) {
-            $shouldReset = true;
+            $needAutoReset = true;
         }
 
-        // ---- KONDISI 2: RESET OTOMATIS JAM 17:50 ----
-        if ($timeNow >= $resetTime && $lastDate === $today && $lastTime !== $resetTime) {
-            $shouldReset = true;
+        // Reset otomatis jam 18:10
+        if ($time >= $resetTime && ($lastTime !== $resetTime)) {
+            $needAutoReset = true;
         }
 
-        // Jika tidak ada kondisi yang terpenuhi, jangan reset
-        if (! $shouldReset) {
-            return response()->json([
-                'success' => false,
-                'message' => "Reward sudah di-set hari ini",
-            ]);
-        }
+        // === JIKA ROUTE DIPANGGIL, SELALU RESET TANPA SYARAT ===
+        // kita abaikan kondisi autoReset, karena route = manual trigger
+        // autoReset tetap berguna jika Anda pakai scheduler, tapi manual override selalu menang
 
-        // ---- RESET REWARD ----
+        // === RESET REWARD ===
         DB::table('rewards')->truncate();
 
         $defaultRewards = [
@@ -135,12 +132,13 @@ class RewardController extends Controller
 
         DB::table('rewards')->insert($defaultRewards);
 
-        // ---- SIMPAN TANGGAL & JAM RESET ----
-        file_put_contents($flagFile, $today . "|" . ($timeNow >= $resetTime ? $resetTime : $timeNow));
+        // === SIMPAN LOG RESET ===
+        file_put_contents($flagFile, $today . "|" . $time);
 
         return response()->json([
             'success' => true,
             'message' => "Reward berhasil di-reset pada " . $now->format('Y-m-d H:i'),
+            'auto_reset_reason' => $needAutoReset ? 'auto' : 'manual'
         ]);
     }
 
