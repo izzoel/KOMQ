@@ -28,16 +28,16 @@ Stok reward dikelola secara real-time melalui panel admin.
 ### 🔐 4. Panel Admin KOMQ
 
 Admin dapat: 
-- Mengatur pertanyaan & kategori\
-- Mengelola reward (tambah, kurangi, toggle aktif/nonaktif)\
-- Melihat riwayat reset reward\
-- Mengatur akses menggunakan password\
+- Mengatur pertanyaan & kategori
+- Mengelola reward (tambah, kurangi, toggle aktif/nonaktif)
+- Melihat riwayat reset reward
+- Mengatur akses menggunakan password
 - Melihat stok reward secara langsung
 
 ### 📅 5. Reset Harian Otomatis
 
 Aplikasi otomatis menyimpan tanggal reset reward dalam file
-`last_reward_reset.txt` dan hanya mengizinkan reset sekali per hari.
+`last_reward_reset.txt` dan secara otomatis melakukan reward per hari.
 
 ## 🛠️ Teknologi
 
