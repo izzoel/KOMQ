@@ -2,7 +2,7 @@
 
 **Tapin Expo 2025**
 
-KOMQ adalah aplikasi kuis interaktif yang dikembangkan oleh **Dinas
+KOMQ adalah aplikasi kuis interaktif yang dikembangkan untuk **Dinas
 Komunikasi dan Informatika Kabupaten Tapin** sebagai media edukasi,
 promosi layanan, dan hiburan untuk pengunjung **Tapin Expo 2025**.\
 Aplikasi ini menampilkan pertanyaan seputar layanan publik, teknologi
