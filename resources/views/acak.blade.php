@@ -204,7 +204,7 @@
 
         .ketReward {
             position: absolute;
-            top: 100px;
+            top: 17px;
             left: 50%;
             transform: translateX(-50%);
             font-weight: 700;
