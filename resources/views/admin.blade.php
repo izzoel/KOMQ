@@ -78,6 +78,18 @@
             filter: brightness(0.9);
             transition: box-shadow .1s, transform .1s, filter .12s;
         }
+
+        #logoutQuiz {
+            will-change: transform;
+            transition: box-shadow .1s, transform .1s;
+        }
+
+        #logoutQuiz:hover {
+            animation-play-state: paused;
+            transform: translateY(-1px);
+            filter: brightness(0.9);
+            transition: box-shadow .1s, transform .1s, filter .12s;
+        }
     </style>
 
 </head>
@@ -89,23 +101,27 @@
         <a href="/logout">
             <button id="logoutBtn" class="btn-3d m-3">Logout</button>
         </a>
+        <a href="{{ route('admin.quiz.index') }}">
+            <button id="logoutQuiz" class="btn-3d m-3">Kelola Soal Kuis</button>
+        </a>
     </div>
 
     <div class="d-flex justify-content-center align-items-center flex-column mt-5">
         <div class="card" style="width: 80%">
-            <div class="card-header">
-                <button class="btn btn-secondary btn-sm">Admin Panel</button> | <form action="{{ route('reward.set') }}" method="GET" style="display:inline;">
-                    <button type="submit" class="btn btn-warning btn-sm">
-                        {{ now()->translatedFormat('d F Y') }}
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <div>
+                    <span class="badge bg-secondary">Admin Panel</span>
+                    @if ($sudahReset && $tanggalReset)
+                        <span class="badge bg-success ms-1" title="Terakhir di-reset">
+                            Reset: {{ $tanggalReset }}
+                        </span>
+                    @endif
+                </div>
+                <div>
+                    <button type="button" class="btn btn-warning btn-sm" id="btnResetReward">
+                        🔄 Reset Stok Harian ({{ now()->translatedFormat('d F Y') }})
                     </button>
-                </form>
-
-                {{-- | --}}
-                {{-- @if ($sudahReset) --}}
-                {{-- <a href="/admin/set" class="badge bg-danger">Reset</a> {{ \Carbon\Carbon::parse($tanggalReset)->translatedFormat('d F Y H:i') }} --}}
-                {{-- @else
-                    <span class="badge bg-danger">Belum Reset</span>
-                @endif --}}
+                </div>
             </div>
             <div class="card-body">
                 <h5 class="card-title">Reward List
@@ -127,12 +143,14 @@
                             <tr class="text-center">
                                 <td>
                                     <div class="form-check form-switch d-flex justify-content-center">
-                                        <input class="form-check-input toggle-switch" type="checkbox" {{ $reward->stock > 0 ? 'checked' : '' }} data-id="{{ $reward->id }}">
+                                        <input class="form-check-input toggle-switch" type="checkbox"
+                                            {{ $reward->stock > 0 ? 'checked' : '' }} data-id="{{ $reward->id }}">
                                     </div>
                                 </td>
 
                                 <td class="text-start">
-                                    <button type="button" class="btn btn-link p-0 editRewardBtn" data-id="{{ $reward->id }}" data-bs-toggle="modal"
+                                    <button type="button" class="btn btn-link p-0 editRewardBtn"
+                                        data-id="{{ $reward->id }}" data-bs-toggle="modal"
                                         data-bs-target="#editRewardModal" {{ $reward->is_aktive ? '' : 'disabled' }}>
                                         <strong>{{ $reward->name }}</strong>
                                     </button>
@@ -150,11 +168,13 @@
 
                                 <td>
                                     <div class="d-flex justify-content-center gap-2">
-                                        <button class="btn btn-primary btn-sm btn-plus px-3" data-id="{{ $reward->id }}" {{ $reward->is_aktive ? '' : 'disabled' }}>
+                                        <button class="btn btn-primary btn-sm btn-plus px-3"
+                                            data-id="{{ $reward->id }}" {{ $reward->is_aktive ? '' : 'disabled' }}>
                                             +
                                         </button>
 
-                                        <button class="btn btn-danger btn-sm btn-minus px-3" data-id="{{ $reward->id }}" {{ $reward->is_aktive ? '' : 'disabled' }}>
+                                        <button class="btn btn-danger btn-sm btn-minus px-3"
+                                            data-id="{{ $reward->id }}" {{ $reward->is_aktive ? '' : 'disabled' }}>
                                             −
                                         </button>
                                     </div>
@@ -211,8 +231,17 @@
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label">Stok</label>
-                            <input type="number" class="form-control" id="edit_stock" name="stock" required>
+                            <label class="form-label">Stok Saat Ini</label>
+                            <input type="number" class="form-control" id="edit_stock" name="stock" required
+                                min="0">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Stok Default Harian (Reset)</label>
+                            <input type="number" class="form-control" id="edit_default_stock" name="default_stock"
+                                required min="0">
+                            <small class="text-muted">Jumlah stok yang akan dipulihkan setiap kali tombol reset
+                                ditekan.</small>
                         </div>
 
                         <button type="submit" class="btn btn-primary w-100">
@@ -228,8 +257,9 @@
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
-        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous">
+    </script>
     <script>
         $(document).on("click", ".editRewardBtn", function() {
             const id = $(this).data("id");
@@ -238,6 +268,56 @@
                 $("#edit_id").val(data.id);
                 $("#edit_name").val(data.name);
                 $("#edit_stock").val(data.stock);
+                $("#edit_default_stock").val(data.default_stock !== undefined ? data.default_stock : data
+                    .stock);
+            });
+        });
+
+        // Reset Stok Hadiah Harian
+        $(document).on("click", "#btnResetReward", function(e) {
+            e.preventDefault();
+
+            Swal.fire({
+                title: "Reset Stok Hadiah?",
+                text: "Seluruh stok hadiah aktif akan dikembalikan ke nilai stok harian default tanpa menghapus daftar hadiah.",
+                icon: "question",
+                showCancelButton: true,
+                confirmButtonColor: "#ffc107",
+                cancelButtonColor: "#6c757d",
+                confirmButtonText: "Ya, Reset Stok!",
+                cancelButtonText: "Batal"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire({
+                        title: "Mereset stok...",
+                        allowOutsideClick: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
+
+                    $.ajax({
+                        url: "{{ route('reward.set') }}",
+                        type: "GET",
+                        dataType: "json",
+                        success: function(res) {
+                            Swal.fire({
+                                icon: "success",
+                                title: "Berhasil!",
+                                text: res.message ||
+                                    "Stok hadiah harian berhasil di-reset.",
+                                timer: 2000,
+                                showConfirmButton: false
+                            }).then(() => {
+                                location.reload();
+                            });
+                        },
+                        error: function() {
+                            Swal.fire("Gagal", "Terjadi kesalahan saat mereset stok hadiah.",
+                                "error");
+                        }
+                    });
+                }
             });
         });
 
