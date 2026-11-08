@@ -79,19 +79,18 @@
             perspective: 1200px;
         }
 
-        /* Base SVG Ring Styling */
+        /* Base SVG Ring Styling (Rotasi Dikontrol Halus via JavaScript) */
         .holo-svg-ring {
             position: absolute;
             width: 100%;
             height: 100%;
             transform-origin: center center;
             will-change: transform, filter;
-            transition: filter 0.8s ease;
+            pointer-events: none;
         }
 
         /* 1. Ring Terluar: Cyber Compass & Tech Arcs */
         .ring-outer-hud {
-            animation: rotateCw 50s linear infinite;
             filter: drop-shadow(0 0 12px rgba(245, 159, 0, 0.35));
             opacity: 0.85;
         }
@@ -100,7 +99,6 @@
         .ring-middle-circuit {
             width: 82%;
             height: 82%;
-            animation: rotateCcw 32s linear infinite;
             filter: drop-shadow(0 0 16px rgba(56, 189, 248, 0.4));
             opacity: 0.75;
         }
@@ -109,7 +107,6 @@
         .ring-inner-orbit {
             width: 66%;
             height: 66%;
-            animation: rotateCw 18s linear infinite;
             filter: drop-shadow(0 0 14px rgba(251, 191, 36, 0.45));
             opacity: 0.8;
         }
@@ -122,8 +119,8 @@
             border-radius: 50%;
             border: 2px dashed rgba(245, 159, 0, 0.35);
             box-shadow: 0 0 30px rgba(245, 159, 0, 0.2), inset 0 0 20px rgba(99, 102, 241, 0.15);
-            transform: rotateX(68deg) rotateY(15deg) rotateZ(0deg);
-            animation: rotateGyro 20s linear infinite;
+            transform-origin: center center;
+            will-change: transform;
         }
 
         .ring-gyro-3d-reverse {
@@ -133,8 +130,8 @@
             border-radius: 50%;
             border: 1.5px solid rgba(56, 189, 248, 0.3);
             box-shadow: 0 0 25px rgba(56, 189, 248, 0.25);
-            transform: rotateX(-65deg) rotateY(20deg) rotateZ(0deg);
-            animation: rotateGyroRev 26s linear infinite;
+            transform-origin: center center;
+            will-change: transform;
         }
 
         /* Energy Pulse Core */
@@ -150,58 +147,6 @@
         @keyframes coreBreath {
             0% { transform: scale(0.85); opacity: 0.5; }
             100% { transform: scale(1.15); opacity: 0.9; filter: drop-shadow(0 0 25px rgba(245, 159, 0, 0.4)); }
-        }
-
-        /* Keyframes Rotasi */
-        @keyframes rotateCw {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-
-        @keyframes rotateCcw {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(-360deg); }
-        }
-
-        @keyframes rotateGyro {
-            from { transform: rotateX(68deg) rotateY(15deg) rotateZ(0deg); }
-            to { transform: rotateX(68deg) rotateY(15deg) rotateZ(360deg); }
-        }
-
-        @keyframes rotateGyroRev {
-            from { transform: rotateX(-65deg) rotateY(20deg) rotateZ(0deg); }
-            to { transform: rotateX(-65deg) rotateY(20deg) rotateZ(-360deg); }
-        }
-
-        /* ========================================================
-           OVERDRIVE BOOST EFFECT (KETIKA TOMBOL ACAK DI-SPIN)
-           ======================================================== */
-        .hologram-rings-container.spinning-boost .ring-outer-hud {
-            animation-duration: 6s !important;
-            filter: drop-shadow(0 0 30px rgba(245, 159, 0, 0.9)) !important;
-            opacity: 1 !important;
-        }
-
-        .hologram-rings-container.spinning-boost .ring-middle-circuit {
-            animation-duration: 4s !important;
-            filter: drop-shadow(0 0 35px rgba(56, 189, 248, 0.9)) !important;
-            opacity: 1 !important;
-        }
-
-        .hologram-rings-container.spinning-boost .ring-inner-orbit {
-            animation-duration: 2.5s !important;
-            filter: drop-shadow(0 0 25px rgba(251, 191, 36, 0.95)) !important;
-            opacity: 1 !important;
-        }
-
-        .hologram-rings-container.spinning-boost .ring-gyro-3d {
-            animation-duration: 3s !important;
-            box-shadow: 0 0 45px rgba(245, 159, 0, 0.6) !important;
-        }
-
-        .hologram-rings-container.spinning-boost .ring-gyro-3d-reverse {
-            animation-duration: 3.5s !important;
-            box-shadow: 0 0 40px rgba(56, 189, 248, 0.6) !important;
         }
 
         /* Top Brand Header Bar */
@@ -452,10 +397,45 @@
             cursor: not-allowed;
             transform: none !important;
         }
+
+        /* Sound Control Floating Button */
+        .btn-sound-toggle {
+            position: absolute;
+            top: 20px;
+            right: 25px;
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(10px);
+            border: 1.5px solid rgba(255, 215, 0, 0.4);
+            color: #ffd43b;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            cursor: pointer;
+            z-index: 100;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.5);
+            transition: all 0.2s ease;
+            outline: none;
+        }
+
+        .btn-sound-toggle:hover {
+            background: rgba(245, 159, 0, 0.25);
+            border-color: #ffd43b;
+            transform: scale(1.1);
+            color: #fff;
+        }
     </style>
 </head>
 
 <body>
+
+    <!-- Sound Control Toggle Button -->
+    <button type="button" class="btn-sound-toggle" id="btnSound" title="Aktif/Nonaktifkan Suara Kuis">
+        <i class="bi bi-volume-up-fill" id="soundIcon"></i>
+    </button>
 
     <!-- Stage Spotlight Glow -->
     <div class="stage-spotlight"></div>
@@ -466,11 +446,11 @@
         <div class="energy-pulse-core"></div>
 
         <!-- 3D Gyroscope Orbital Rings (Memeluk Bola 3D) -->
-        <div class="ring-gyro-3d"></div>
-        <div class="ring-gyro-3d-reverse"></div>
+        <div class="ring-gyro-3d" id="ringGyro1"></div>
+        <div class="ring-gyro-3d-reverse" id="ringGyro2"></div>
 
         <!-- Ring 1: Terluar - Tech HUD Compass & Segmented Arcs (Gold & Amber Glow) -->
-        <svg class="holo-svg-ring ring-outer-hud" viewBox="0 0 800 800" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <svg class="holo-svg-ring ring-outer-hud" id="ringOuter" viewBox="0 0 800 800" fill="none" xmlns="http://www.w3.org/2000/svg">
             <circle cx="400" cy="400" r="370" stroke="rgba(245, 159, 0, 0.25)" stroke-width="1.5" stroke-dasharray="8 6"/>
             <circle cx="400" cy="400" r="355" stroke="rgba(255, 215, 0, 0.45)" stroke-width="2.5" stroke-dasharray="140 30 40 30"/>
             <circle cx="400" cy="400" r="338" stroke="rgba(245, 159, 0, 0.2)" stroke-width="1"/>
@@ -499,7 +479,7 @@
         </svg>
 
         <!-- Ring 2: Tengah - Cyber Circuit & Data Waves (Cyan & Electric Blue) -->
-        <svg class="holo-svg-ring ring-middle-circuit" viewBox="0 0 650 650" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <svg class="holo-svg-ring ring-middle-circuit" id="ringMiddle" viewBox="0 0 650 650" fill="none" xmlns="http://www.w3.org/2000/svg">
             <circle cx="325" cy="325" r="300" stroke="rgba(56, 189, 248, 0.3)" stroke-width="2" stroke-dasharray="16 12"/>
             <circle cx="325" cy="325" r="285" stroke="rgba(14, 165, 233, 0.5)" stroke-width="3" stroke-dasharray="80 40 20 40"/>
             <circle cx="325" cy="325" r="270" stroke="rgba(56, 189, 248, 0.2)" stroke-width="1.5"/>
@@ -516,7 +496,7 @@
         </svg>
 
         <!-- Ring 3: Dalam - Radar Astrolabe & Golden Glyphs -->
-        <svg class="holo-svg-ring ring-inner-orbit" viewBox="0 0 500 500" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <svg class="holo-svg-ring ring-inner-orbit" id="ringInner" viewBox="0 0 500 500" fill="none" xmlns="http://www.w3.org/2000/svg">
             <circle cx="250" cy="250" r="230" stroke="rgba(245, 159, 0, 0.45)" stroke-width="2" stroke-dasharray="30 15 10 15"/>
             <circle cx="250" cy="250" r="215" stroke="rgba(255, 215, 0, 0.3)" stroke-width="1.5" stroke-dasharray="6 6"/>
             <!-- Triangle Accents -->
@@ -533,10 +513,12 @@
         <!-- Top Header & Doorprize Status -->
         <div class="top-header">
             <div class="brand-pill">
-                <img src="{{ asset('images/diskominfo.png') }}" alt="Diskominfo" style="height: 36px;">
+                <img src="{{ asset('images/diskominfo.png') }}" alt="Diskominfo" style="height: 38px;">
+                <div style="height: 28px; width: 1px; background: rgba(255, 215, 0, 0.35);"></div>
+                <img src="{{ asset('images/Tapin 69.svg') }}" alt="HUT Tapin 69" style="height: 38px; max-width: 110px; object-fit: contain;">
                 <div class="text-start">
                     <div class="header-subtitle">Dinas Kominfo Kab. Tapin</div>
-                    <h1 class="header-title-gold">TAPIN EXPO 2025</h1>
+                    <h1 class="header-title-gold">TAPIN EXPO 2026</h1>
                 </div>
             </div>
 
@@ -573,6 +555,124 @@
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
 
     <script>
+        // ========================================================
+        // WEB AUDIO SYNTHESIZER (SOUND EFFECTS TANPA FILE EKSTERNAL)
+        // ========================================================
+        let audioCtx = null;
+        let soundEnabled = true;
+
+        function getAudioContext() {
+            if (!audioCtx) {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                audioCtx = new AudioContext();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            return audioCtx;
+        }
+
+        // 1. Suara Launch / Power-Up saat Mulai Putaran
+        function playLaunchSound() {
+            if (!soundEnabled) return;
+            try {
+                const ctx = getAudioContext();
+                const now = ctx.currentTime;
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(150, now);
+                osc.frequency.exponentialRampToValueAtTime(700, now + 0.38);
+
+                const filter = ctx.createBiquadFilter();
+                filter.type = 'lowpass';
+                filter.frequency.setValueAtTime(350, now);
+                filter.frequency.exponentialRampToValueAtTime(2400, now + 0.38);
+
+                gain.gain.setValueAtTime(0.01, now);
+                gain.gain.linearRampToValueAtTime(0.22, now + 0.12);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.42);
+
+                osc.connect(filter);
+                filter.connect(gain);
+                gain.connect(ctx.destination);
+
+                osc.start(now);
+                osc.stop(now + 0.45);
+            } catch (e) {}
+        }
+
+        // 2. Suara Ritmik Cyber Whir / Ticker saat Berputar
+        function playSpinTick(pitch = 520) {
+            if (!soundEnabled) return;
+            try {
+                const ctx = getAudioContext();
+                const now = ctx.currentTime;
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(pitch, now);
+                osc.frequency.exponentialRampToValueAtTime(180, now + 0.032);
+
+                gain.gain.setValueAtTime(0.07, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.032);
+
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+
+                osc.start(now);
+                osc.stop(now + 0.035);
+            } catch (e) {}
+        }
+
+        // 3. Suara Fanfare Perayaan saat Kategori Terpilih
+        function playWinnerFanfare() {
+            if (!soundEnabled) return;
+            try {
+                const ctx = getAudioContext();
+                const now = ctx.currentTime;
+                // Akord Mayor berkilau C5, E5, G5, C6
+                const notes = [523.25, 659.25, 783.99, 1046.50];
+                notes.forEach((freq, idx) => {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(freq, now + (idx * 0.09));
+
+                    gain.gain.setValueAtTime(0, now + (idx * 0.09));
+                    gain.gain.linearRampToValueAtTime(0.24, now + (idx * 0.09) + 0.02);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + (idx * 0.09) + 0.55);
+
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+
+                    osc.start(now + (idx * 0.09));
+                    osc.stop(now + (idx * 0.09) + 0.6);
+                });
+            } catch (e) {}
+        }
+
+        // Toggle Sound Mute/Unmute
+        const soundBtn = document.getElementById('btnSound');
+        const soundIcon = document.getElementById('soundIcon');
+        soundBtn.addEventListener('click', () => {
+            getAudioContext();
+            soundEnabled = !soundEnabled;
+            if (soundEnabled) {
+                soundIcon.className = 'bi bi-volume-up-fill';
+                soundBtn.title = 'Suara Kuis Aktif';
+                soundBtn.style.color = '#ffd43b';
+                playSpinTick(660);
+            } else {
+                soundIcon.className = 'bi bi-volume-mute-fill';
+                soundBtn.title = 'Suara Kuis Dinonaktifkan';
+                soundBtn.style.color = '#94a3b8';
+            }
+        });
+
         // Kategori dinamis dari database (fallback ke kategori default jika DB kosong)
         const categories = @json($categories);
 
@@ -660,6 +760,23 @@
             });
         }
 
+        // Elemen Cincin Hologram
+        const elRingOuter = document.getElementById('ringOuter');
+        const elRingMiddle = document.getElementById('ringMiddle');
+        const elRingInner = document.getElementById('ringInner');
+        const elRingGyro1 = document.getElementById('ringGyro1');
+        const elRingGyro2 = document.getElementById('ringGyro2');
+
+        // Sudut & Kecepatan Putaran Cincin (Continuous Smooth Physics)
+        let ringAngleOuter = 0,
+            ringAngleMiddle = 0,
+            ringAngleInner = 0,
+            ringAngleGyro1 = 0,
+            ringAngleGyro2 = 0;
+
+        let currentRingSpeed = 1.0;
+        let targetRingSpeed = 1.0;
+
         let rotX = 0.4,
             rotY = 0.6,
             velX = 0.0015,
@@ -668,8 +785,26 @@
         let last = performance.now();
 
         function raf(now) {
-            const dt = now - last;
+            const dt = Math.min(now - last, 100); // Batasi dt untuk mencegah lompatan frame saat tab tidak aktif
             last = now;
+
+            // Interpolasi LERP Kecepatan Cincin (Sangat Halus saat Mulai dan Berhenti)
+            currentRingSpeed += (targetRingSpeed - currentRingSpeed) * 0.045;
+
+            // Update Sudut Cincin
+            ringAngleOuter  += (0.00040 * currentRingSpeed) * dt;
+            ringAngleMiddle -= (0.00070 * currentRingSpeed) * dt;
+            ringAngleInner  += (0.00105 * currentRingSpeed) * dt;
+            ringAngleGyro1  += (0.00085 * currentRingSpeed) * dt;
+            ringAngleGyro2  -= (0.00065 * currentRingSpeed) * dt;
+
+            if (elRingOuter) elRingOuter.style.transform = `rotate(${ringAngleOuter}rad)`;
+            if (elRingMiddle) elRingMiddle.style.transform = `rotate(${ringAngleMiddle}rad)`;
+            if (elRingInner) elRingInner.style.transform = `rotate(${ringAngleInner}rad)`;
+            if (elRingGyro1) elRingGyro1.style.transform = `rotateX(68deg) rotateY(15deg) rotateZ(${ringAngleGyro1}rad)`;
+            if (elRingGyro2) elRingGyro2.style.transform = `rotateX(-65deg) rotateY(20deg) rotateZ(${ringAngleGyro2}rad)`;
+
+            // Update Bola Tag 3D
             if (animating) {
                 rotX += velX * dt;
                 rotY += velY * dt;
@@ -681,11 +816,14 @@
         createTags();
         requestAnimationFrame(raf);
 
-        function spinAndPick(duration = 2400) {
+        function spinAndPick(duration = 2600) {
             spinBtn.disabled = true;
 
-            const ringsContainer = document.getElementById('hologramRings');
-            if (ringsContainer) ringsContainer.classList.add('spinning-boost');
+            // Bunyikan Suara Launch / Power Up
+            playLaunchSound();
+
+            // Naikkan target kecepatan cincin secara bertahap (akselerasi mulus)
+            targetRingSpeed = 5.5;
 
             // Reset highlight ketika spin dimulai
             if (lastSelected !== null) {
@@ -696,24 +834,59 @@
             // Hilangkan dim pada semua tag
             tags.forEach(tag => tag.el.classList.remove('dim'));
 
-            const startVX = velX,
-                startVY = velY;
-            velX = (Math.random() * 0.014 + 0.009) * (Math.random() < 0.5 ? -1 : 1);
-            velY = (Math.random() * 0.014 + 0.009) * (Math.random() < 0.5 ? -1 : 1);
+            const baseVX = 0.0015;
+            const baseVY = 0.0018;
+            const signX = Math.random() < 0.5 ? -1 : 1;
+            const signY = Math.random() < 0.5 ? -1 : 1;
+            const peakVX = (Math.random() * 0.010 + 0.012) * signX;
+            const peakVY = (Math.random() * 0.010 + 0.012) * signY;
+
             animating = true;
             const t0 = performance.now();
+            let lastStepTime = t0;
+            const accelDuration = 450; // Waktu akselerasi mulus (450ms)
+            let tickAccumulator = 0;
 
             function step(now) {
-                const t = now - t0;
-                if (t < duration) {
-                    velX *= 0.995;
-                    velY *= 0.995;
+                const elapsed = now - t0;
+                const dtStep = now - lastStepTime;
+                lastStepTime = now;
+
+                if (elapsed < duration) {
+                    if (elapsed < accelDuration) {
+                        // Fase 1: Akselerasi Mulus (Ease-In) dari pelan ke cepat
+                        const tAccel = elapsed / accelDuration;
+                        const easeIn = tAccel * tAccel; // Quadratic ease-in
+                        velX = baseVX + (peakVX - baseVX) * easeIn;
+                        velY = baseVY + (peakVY - baseVY) * easeIn;
+                    } else {
+                        // Fase 2: Deselerasi Mulus (Gradual Damping)
+                        velX *= 0.993;
+                        velY *= 0.993;
+
+                        // Kembalikan kecepatan cincin ke normal secara halus seiring perlambatan
+                        if (elapsed > duration * 0.45) {
+                            targetRingSpeed = 1.0;
+                        }
+                    }
+
+                    // Suara Ticker Berputar Adaptif (Kecepatan Detak Mengikuti Kecepatan Putaran)
+                    const speed = Math.hypot(velX, velY);
+                    tickAccumulator += speed * dtStep;
+                    if (tickAccumulator > 0.40) {
+                        tickAccumulator = 0;
+                        const pitch = 420 + Math.min(380, speed * 22000);
+                        playSpinTick(pitch);
+                    }
+
                     requestAnimationFrame(step);
                 } else {
+                    // Berhenti secara mulus dan pilih pemenang
                     animating = false;
-                    velX = startVX;
-                    velY = startVY;
-                    if (ringsContainer) ringsContainer.classList.remove('spinning-boost');
+                    velX = baseVX;
+                    velY = baseVY;
+                    targetRingSpeed = 1.0;
+
                     const idx = Math.floor(Math.random() * tags.length);
                     highlight(idx);
                 }
@@ -724,6 +897,9 @@
         let lastSelected = null;
 
         function highlight(index) {
+            // Mainkan Suara Kemenangan Fanfare
+            playWinnerFanfare();
+
             if (lastSelected !== null) tags[lastSelected].el.classList.remove('selected');
 
             tags.forEach((tg, i) => {
@@ -739,8 +915,8 @@
             // Ledakan Confetti Perayaan saat Terpilih
             try {
                 confetti({
-                    particleCount: 75,
-                    spread: 65,
+                    particleCount: 85,
+                    spread: 70,
                     origin: { y: 0.55 }
                 });
             } catch (e) {}
@@ -756,18 +932,21 @@
         function moveToFront(tag) {
             const targetRotX = Math.PI / 2 - tag.phi;
             const targetRotY = -tag.theta;
-            const duration = 1200;
+            const duration = 1300;
             const startX = rotX,
                 startY = rotY;
             const start = performance.now();
 
             function anim(now) {
-                const t = (now - start) / duration;
+                const t = Math.min((now - start) / duration, 1);
+                // Cubic-Quartic ease-out yang sangat halus dan elegan
+                const ease = 1 - Math.pow(1 - t, 3.5);
+                
+                rotX = startX + (targetRotX - startX) * ease;
+                rotY = startY + (targetRotY - startY) * ease;
+                placeTags(rotX, rotY);
+
                 if (t < 1) {
-                    const ease = 1 - Math.pow(1 - t, 500);
-                    rotX = startX + (targetRotX - startX) * ease;
-                    rotY = startY + (targetRotY - startY) * ease;
-                    placeTags(rotX, rotY);
                     requestAnimationFrame(anim);
                 } else {
                     rotX = targetRotX;
