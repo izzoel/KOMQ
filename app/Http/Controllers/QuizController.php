@@ -14,8 +14,12 @@ class QuizController extends Controller
     public function index()
     {
         $totalStok = Reward::sum('stock');
+        $dbCategories = Quiz::select('kategori')->distinct()->pluck('kategori')->toArray();
 
-        return view('acak', compact('totalStok'));
+        $defaultCategories = ['Pemrograman', 'Artificial Intelligence', 'SuperApps', 'Internet Sehat', 'GOVEM', 'LAPOR!'];
+        $categories = !empty($dbCategories) ? array_values($dbCategories) : $defaultCategories;
+
+        return view('acak', compact('totalStok', 'categories'));
     }
 
     /**
