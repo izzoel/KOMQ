@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Participant;
 use App\Models\Quiz;
-use App\Models\User;
 use App\Models\Reward;
+use App\Models\Setting;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
@@ -20,7 +22,10 @@ class AdminController extends Controller
         $sudahReset = file_exists($path);
         $tanggalReset = $sudahReset ? trim(file_get_contents($path)) : null;
 
-        return view('admin', compact('rewards','sudahReset', 'tanggalReset'));
+        $requirePhone = Setting::get('require_phone', '1') === '1';
+        $totalParticipants = Participant::count();
+
+        return view('admin', compact('rewards', 'sudahReset', 'tanggalReset', 'requirePhone', 'totalParticipants'));
     }
 
     public function login()
@@ -130,5 +135,72 @@ class AdminController extends Controller
         $quiz->delete();
 
         return response()->json(['success' => true, 'message' => 'Soal berhasil dihapus']);
+    }
+
+    // ========================================
+    // Pengaturan Fitur & Manajemen Peserta
+    // ========================================
+
+    public function featuresIndex()
+    {
+        $requirePhone = Setting::get('require_phone', '1') === '1';
+
+        return view('admin-features', compact('requirePhone'));
+    }
+
+    public function participantsIndex()
+    {
+        $participants = Participant::orderBy('id', 'desc')->get();
+        $totalParticipants = $participants->count();
+        $requirePhone = Setting::get('require_phone', '1') === '1';
+
+        return view('admin-participants', compact('participants', 'totalParticipants', 'requirePhone'));
+    }
+
+    public function togglePhoneRequirement(Request $request)
+    {
+        $current = Setting::get('require_phone', '1');
+        $newVal = ($current === '1') ? '0' : '1';
+        Setting::set('require_phone', $newVal);
+
+        $statusText = ($newVal === '1') ? 'Aktif (Wajib Input No. HP)' : 'Nonaktif (Tanpa Input No. HP)';
+        $log = "[" . now()->format('Y-m-d H:i:s') . "] Admin mengubah pengaturan verifikasi nomor HP: " . $statusText;
+        Storage::append('admin_logs.txt', $log);
+
+        return response()->json([
+            'success'     => true,
+            'status'      => $newVal,
+            'is_required' => ($newVal === '1'),
+            'message'     => 'Fitur input nomor HP sekarang ' . $statusText,
+        ]);
+    }
+
+    public function destroyParticipant($id)
+    {
+        $participant = Participant::findOrFail($id);
+        $phone = $participant->phone_number;
+        $participant->delete();
+
+        $log = "[" . now()->format('Y-m-d H:i:s') . "] Admin menghapus nomor peserta: " . $phone;
+        Storage::append('admin_logs.txt', $log);
+
+        return response()->json([
+            'success' => true,
+            'message' => "Nomor {$phone} berhasil dihapus dari database peserta.",
+        ]);
+    }
+
+    public function resetParticipants()
+    {
+        $count = Participant::count();
+        Participant::truncate();
+
+        $log = "[" . now()->format('Y-m-d H:i:s') . "] Admin mereset seluruh data peserta ({$count} nomor dihapus).";
+        Storage::append('admin_logs.txt', $log);
+
+        return response()->json([
+            'success' => true,
+            'message' => "Seluruh data peserta ({$count} nomor) berhasil di-reset.",
+        ]);
     }
 }

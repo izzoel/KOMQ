@@ -1,181 +1,85 @@
-<!DOCTYPE html>
-<html lang="en">
+@extends('layouts.admin')
 
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>KOMQ Admin Panel</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+@section('title', 'Manajemen Reward - KOMQ Admin Panel')
 
-    <style>
-        :root {
-            --size: 520px;
-        }
-
-        body {
-            background: #111;
-            /* color: #fff; */
-            font-family: Arial;
-            overflow: hidden;
-        }
-
-        .btn-3d {
-
-            background: linear-gradient(to bottom, #ffd131 0%, #e3a600 70%);
-            border: none;
-            border-radius: 24px;
-            padding: 8px 22px;
-            font-size: 16px;
-            font-weight: bold;
-            color: #5a3e00;
-            cursor: pointer;
-            box-shadow: 0px 8px 0px #b78100, 0px 10px 18px rgba(0, 0, 0, 0.35);
-            position: relative;
-            outline: none;
-        }
-
-        .btn-3d::after {
-            content: "";
-            position: absolute;
-            top: 6px;
-            left: 12px;
-            right: 12px;
-            height: 38%;
-            border-radius: 30px;
-            background: rgba(255, 255, 255, 0.45);
-        }
-
-        .btn-3d:active {
-            transform: translateY(4px);
-            box-shadow: 0px 4px 0px #b78100, 0px 6px 12px rgba(0, 0, 0, 0.35);
-        }
-
-
-        @keyframes floatY {
-            0% {
-                transform: translateY(0);
-            }
-
-            50% {
-                transform: translateY(-4px);
-            }
-
-            100% {
-                transform: translateY(0);
-            }
-        }
-
-        #logoutBtn {
-            will-change: transform;
-            transition: box-shadow .1s, transform .1s;
-        }
-
-        #logoutBtn:hover {
-            animation-play-state: paused;
-            transform: translateY(-1px);
-            filter: brightness(0.9);
-            transition: box-shadow .1s, transform .1s, filter .12s;
-        }
-
-        #logoutQuiz {
-            will-change: transform;
-            transition: box-shadow .1s, transform .1s;
-        }
-
-        #logoutQuiz:hover {
-            animation-play-state: paused;
-            transform: translateY(-1px);
-            filter: brightness(0.9);
-            transition: box-shadow .1s, transform .1s, filter .12s;
-        }
-    </style>
-
-</head>
-
-<body
-    style="background-image: url('{{ asset('images/quiz-bg.jpg') }}'); background-size: cover; background-position: center; background-repeat: no-repeat; min-height: 100vh; position: relative;">
-
-    <div class="m-4 mb-0">
-        <a href="/logout">
-            <button id="logoutBtn" class="btn-3d m-3">Logout</button>
-        </a>
-        <a href="{{ route('admin.quiz.index') }}">
-            <button id="logoutQuiz" class="btn-3d m-3">Kelola Soal Kuis</button>
-        </a>
-    </div>
-
-    <div class="d-flex justify-content-center align-items-center flex-column mt-5">
-        <div class="card" style="width: 80%">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <div>
-                    <span class="badge bg-secondary">Admin Panel</span>
-                    @if ($sudahReset && $tanggalReset)
-                        <span class="badge bg-success ms-1" title="Terakhir di-reset">
-                            Reset: {{ $tanggalReset }}
-                        </span>
-                    @endif
-                </div>
-                <div>
-                    <button type="button" class="btn btn-warning btn-sm" id="btnResetReward">
-                        🔄 Reset Stok Harian ({{ now()->translatedFormat('d F Y') }})
-                    </button>
-                </div>
-            </div>
-            <div class="card-body">
-                <h5 class="card-title">Reward List
-                    <span>
-                        <a class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#rewardModal">
-                            +
-                        </a>
+@section('content')
+    <div class="card admin-card">
+        <div class="admin-card-header">
+            <div class="d-flex align-items-center gap-2 flex-wrap">
+                <i class="bi bi-gift-fill text-primary fs-5"></i>
+                <h5 class="mb-0 fw-bold text-dark">Daftar Hadiah Doorprize</h5>
+                @if ($sudahReset && $tanggalReset)
+                    <span class="badge bg-success rounded-pill px-3 py-1" title="Terakhir di-reset">
+                        Reset Terakhir: {{ $tanggalReset }}
                     </span>
-                </h5>
-                <table class="table table-hover">
-                    <thead class="text-center">
-                        <th>#</th>
-                        <th class="text-start">Nama</th>
-                        <th>Stok</th>
-                        <th>Aksi</th>
+                @endif
+            </div>
+
+            <div class="d-flex align-items-center gap-2 flex-wrap">
+                <button type="button" class="btn btn-primary btn-sm fw-semibold px-3" data-bs-toggle="modal" data-bs-target="#rewardModal">
+                    <i class="bi bi-plus-lg me-1"></i> Tambah Reward
+                </button>
+                <button type="button" class="btn btn-warning btn-sm fw-semibold px-3" id="btnResetReward">
+                    <i class="bi bi-arrow-clockwise me-1"></i> Reset Stok Harian ({{ now()->translatedFormat('d F Y') }})
+                </button>
+            </div>
+        </div>
+
+        <div class="admin-card-body">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light text-center">
+                        <tr>
+                            <th style="width: 90px;">Status</th>
+                            <th class="text-start">Nama Hadiah</th>
+                            <th style="width: 140px;">Stok Saat Ini</th>
+                            <th style="width: 140px;">Stok Default</th>
+                            <th style="width: 160px;">Kelola Stok</th>
+                        </tr>
                     </thead>
                     <tbody>
                         @foreach ($rewards as $reward)
                             <tr class="text-center">
                                 <td>
-                                    <div class="form-check form-switch d-flex justify-content-center">
-                                        <input class="form-check-input toggle-switch" type="checkbox"
+                                    <div class="form-check form-switch d-flex justify-content-center m-0">
+                                        <input class="form-check-input toggle-switch" type="checkbox" style="cursor: pointer;"
                                             {{ $reward->stock > 0 ? 'checked' : '' }} data-id="{{ $reward->id }}">
                                     </div>
                                 </td>
 
                                 <td class="text-start">
-                                    <button type="button" class="btn btn-link p-0 editRewardBtn"
+                                    <button type="button" class="btn btn-link p-0 text-decoration-none editRewardBtn"
                                         data-id="{{ $reward->id }}" data-bs-toggle="modal"
                                         data-bs-target="#editRewardModal" {{ $reward->is_aktive ? '' : 'disabled' }}>
                                         <strong>{{ $reward->name }}</strong>
+                                        <i class="bi bi-pencil-square ms-1 small text-muted"></i>
                                     </button>
                                 </td>
 
                                 <td>
                                     @if ($reward->stock_temp > 0)
-                                        <span class="badge bg-secondary">off</span>
+                                        <span class="badge bg-secondary rounded-pill px-3">Nonaktif</span>
                                     @elseif ($reward->stock == 0)
-                                        <span class="badge bg-danger">habis</span>
+                                        <span class="badge bg-danger rounded-pill px-3">Habis</span>
                                     @else
-                                        <span class="badge bg-success">{{ $reward->stock }}</span>
+                                        <span class="badge bg-success rounded-pill px-3 fs-6">{{ $reward->stock }}</span>
                                     @endif
+                                </td>
+
+                                <td class="text-muted fw-semibold">
+                                    {{ $reward->default_stock ?? $reward->stock }}
                                 </td>
 
                                 <td>
                                     <div class="d-flex justify-content-center gap-2">
-                                        <button class="btn btn-primary btn-sm btn-plus px-3"
+                                        <button class="btn btn-outline-primary btn-sm btn-plus px-3 fw-bold"
                                             data-id="{{ $reward->id }}" {{ $reward->is_aktive ? '' : 'disabled' }}>
-                                            +
+                                            <i class="bi bi-plus-lg"></i>
                                         </button>
 
-                                        <button class="btn btn-danger btn-sm btn-minus px-3"
+                                        <button class="btn btn-outline-danger btn-sm btn-minus px-3 fw-bold"
                                             data-id="{{ $reward->id }}" {{ $reward->is_aktive ? '' : 'disabled' }}>
-                                            −
+                                            <i class="bi bi-dash-lg"></i>
                                         </button>
                                     </div>
                                 </td>
@@ -186,80 +90,73 @@
             </div>
         </div>
     </div>
+@endsection
 
+@section('modals')
+    <!-- Modal Tambah Reward Baru -->
     <div class="modal fade" id="rewardModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog">
-            <div class="modal-content">
+            <div class="modal-content border-0 shadow">
                 <div class="modal-header">
-                    <h5 class="modal-title">Tambah Reward Baru</h5>
+                    <h5 class="modal-title fw-bold">Tambah Reward Baru</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <form id="rewardForm">
                         @csrf
                         <div class="mb-3">
-                            <label class="form-label">Nama Reward</label>
+                            <label class="form-label fw-semibold">Nama Reward</label>
                             <input type="text" class="form-control" name="name" required>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Stok</label>
+                            <label class="form-label fw-semibold">Stok Awal</label>
                             <input type="number" class="form-control" name="stock" required min="1">
                         </div>
-                        <button type="submit" class="btn btn-primary w-100">Simpan</button>
+                        <button type="submit" class="btn btn-primary w-100 fw-semibold">Simpan</button>
                     </form>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- Modal Edit Reward -->
     <div class="modal fade" id="editRewardModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog">
-            <div class="modal-content">
+            <div class="modal-content border-0 shadow">
                 <div class="modal-header">
-                    <h5 class="modal-title">Edit Reward</h5>
+                    <h5 class="modal-title fw-bold">Edit Reward</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-
                 <div class="modal-body">
                     <form id="editRewardForm">
                         @csrf
                         <input type="hidden" id="edit_id" name="id">
 
                         <div class="mb-3">
-                            <label class="form-label">Nama Reward</label>
+                            <label class="form-label fw-semibold">Nama Reward</label>
                             <input type="text" class="form-control" id="edit_name" name="name" required>
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label">Stok Saat Ini</label>
-                            <input type="number" class="form-control" id="edit_stock" name="stock" required
-                                min="0">
+                            <label class="form-label fw-semibold">Stok Saat Ini</label>
+                            <input type="number" class="form-control" id="edit_stock" name="stock" required min="0">
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label">Stok Default Harian (Reset)</label>
-                            <input type="number" class="form-control" id="edit_default_stock" name="default_stock"
-                                required min="0">
-                            <small class="text-muted">Jumlah stok yang akan dipulihkan setiap kali tombol reset
-                                ditekan.</small>
+                            <label class="form-label fw-semibold">Stok Default Harian (Reset)</label>
+                            <input type="number" class="form-control" id="edit_default_stock" name="default_stock" required min="0">
+                            <small class="text-muted">Jumlah stok yang akan dipulihkan setiap kali tombol reset ditekan.</small>
                         </div>
 
-                        <button type="submit" class="btn btn-primary w-100">
-                            Simpan
-                        </button>
+                        <button type="submit" class="btn btn-primary w-100 fw-semibold">Simpan Perubahan</button>
                     </form>
                 </div>
             </div>
         </div>
     </div>
+@endsection
 
-
-
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous">
-    </script>
+@section('scripts')
     <script>
         $(document).on("click", ".editRewardBtn", function() {
             const id = $(this).data("id");
@@ -268,8 +165,7 @@
                 $("#edit_id").val(data.id);
                 $("#edit_name").val(data.name);
                 $("#edit_stock").val(data.stock);
-                $("#edit_default_stock").val(data.default_stock !== undefined ? data.default_stock : data
-                    .stock);
+                $("#edit_default_stock").val(data.default_stock !== undefined ? data.default_stock : data.stock);
             });
         });
 
@@ -284,7 +180,7 @@
                 showCancelButton: true,
                 confirmButtonColor: "#ffc107",
                 cancelButtonColor: "#6c757d",
-                confirmButtonText: "Ya, Reset Stok!",
+                confirmButtonText: "Ya, Reset Stok",
                 cancelButtonText: "Batal"
             }).then((result) => {
                 if (result.isConfirmed) {
@@ -303,9 +199,8 @@
                         success: function(res) {
                             Swal.fire({
                                 icon: "success",
-                                title: "Berhasil!",
-                                text: res.message ||
-                                    "Stok hadiah harian berhasil di-reset.",
+                                title: "Berhasil",
+                                text: res.message || "Stok hadiah harian berhasil di-reset.",
                                 timer: 2000,
                                 showConfirmButton: false
                             }).then(() => {
@@ -313,8 +208,7 @@
                             });
                         },
                         error: function() {
-                            Swal.fire("Gagal", "Terjadi kesalahan saat mereset stok hadiah.",
-                                "error");
+                            Swal.fire("Gagal", "Terjadi kesalahan saat mereset stok hadiah.", "error");
                         }
                     });
                 }
@@ -333,15 +227,14 @@
                     id: rewardId,
                     status: status
                 },
-                success: function(res) {
+                success: function() {
                     location.reload();
                 },
                 error: function() {
-                    Swal.fire("Error", "Gagal mengubah status stok", "error");
+                    Swal.fire("Error", "Gagal mengubah status stok.", "error");
                 }
             });
         });
-
 
         $(document).on("click", ".btn-plus", function() {
             let id = $(this).data("id");
@@ -360,9 +253,7 @@
                 location.reload();
             });
         });
-    </script>
 
-    <script>
         $("#editRewardForm").submit(function(e) {
             e.preventDefault();
 
@@ -371,16 +262,20 @@
                 type: "POST",
                 data: $(this).serialize(),
                 success: function() {
-                    Swal.fire("Berhasil", "Reward berhasil diperbarui", "success");
                     $("#editRewardModal").modal("hide");
-                    location.reload();
+                    Swal.fire({
+                        icon: "success",
+                        title: "Berhasil",
+                        text: "Reward berhasil diperbarui.",
+                        timer: 1500,
+                        showConfirmButton: false
+                    }).then(() => location.reload());
                 },
                 error: function() {
-                    Swal.fire("Gagal", "Tidak dapat memperbarui reward", "error");
+                    Swal.fire("Gagal", "Tidak dapat memperbarui reward.", "error");
                 }
             });
         });
-
 
         $("#rewardForm").submit(function(e) {
             e.preventDefault();
@@ -390,17 +285,20 @@
                 type: "POST",
                 data: $(this).serialize(),
                 success: function() {
-                    Swal.fire("Berhasil", "Reward berhasil ditambahkan", "success");
                     $("#rewardModal").modal("hide");
                     $("#rewardForm")[0].reset();
-                    location.reload(); // refresh tabel reward
+                    Swal.fire({
+                        icon: "success",
+                        title: "Berhasil",
+                        text: "Reward berhasil ditambahkan.",
+                        timer: 1500,
+                        showConfirmButton: false
+                    }).then(() => location.reload());
                 },
                 error: function() {
-                    Swal.fire("Error", "Gagal menambahkan reward", "error");
+                    Swal.fire("Error", "Gagal menambahkan reward.", "error");
                 }
             });
         });
     </script>
-</body>
-
-</html>
+@endsection

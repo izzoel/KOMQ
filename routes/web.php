@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Route;
 // --- Publik: Halaman Kuis & Doorprize Peserta ---
 Route::get('/', [QuizController::class, 'index'])->name('home');
 Route::get('/quiz', [QuizController::class, 'index'])->name('quiz.take');
+Route::post('/quiz/verify-phone', [QuizController::class, 'verifyPhone'])->name('quiz.verify-phone');
 Route::get('/quiz/{kategori}', [QuizController::class, 'show'])->name('quiz.show');
 Route::post('/quiz/{kategori}/{id_soal}/{jawab}', [QuizController::class, 'update'])->name('jawab');
 
@@ -25,6 +26,17 @@ Route::get('/logout', [AdminController::class, 'logout'])->name('logout');
 // --- Khusus Admin (Dilindungi Middleware Auth) ---
 Route::middleware('auth')->group(function () {
     Route::get('/admin', [AdminController::class, 'index'])->name('admin.index');
+
+    // Pengaturan Fitur Sistem oleh Admin
+    Route::get('/admin/features', [AdminController::class, 'featuresIndex'])->name('admin.features.index');
+    Route::post('/admin/settings/toggle-phone', [AdminController::class, 'togglePhoneRequirement'])->name('admin.settings.toggle-phone');
+
+    // Manajemen Peserta Kuis oleh Admin
+    Route::prefix('admin/participants')->group(function () {
+        Route::get('/', [AdminController::class, 'participantsIndex'])->name('admin.participants.index');
+        Route::delete('/{id}', [AdminController::class, 'destroyParticipant'])->name('admin.participants.destroy');
+        Route::post('/reset', [AdminController::class, 'resetParticipants'])->name('admin.participants.reset');
+    });
 
     // Manajemen Reward oleh Admin
     Route::prefix('reward')->group(function () {

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Participant;
 use App\Models\Reward;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -208,6 +209,7 @@ class RewardController extends Controller
 
         // Cari reward berdasarkan name
         $reward = Reward::where('name', $request->reward)->first();
+        $participantPhone = $request->session()->get('participant_phone', 'Anonimus');
 
         if ($reward && $reward->stock > 0) {
 
@@ -215,15 +217,25 @@ class RewardController extends Controller
             $reward->stock -= 1;
             $reward->save();
 
+            // Catat doorprize yang didapat ke record peserta di database
+            if ($request->session()->has('participant_id')) {
+                $participant = Participant::find($request->session()->get('participant_id'));
+                if ($participant) {
+                    $participant->update([
+                        'doorprize' => $reward->name,
+                    ]);
+                }
+            }
+
             // Tulis log ke file reward_logs.txt
             $log = "[" . now()->format('Y-m-d H:i:s') . "] "
-            . "Anonimus: " . $reward->name . " x1 | Sisa stock: " . $reward->stock;
+                . $participantPhone . ": " . $reward->name . " x1 | Sisa stock: " . $reward->stock;
 
             Storage::append('reward_logs.txt', $log);
         }
 
-        // Hapus token agar tidak bisa digunakan ulang
-        $request->session()->forget('reward_token');
+        // Hapus token dan data sesi kuis agar tidak bisa digunakan ulang
+        $request->session()->forget(['reward_token', 'participant_id', 'participant_phone']);
 
         return response()->json(['success' => true]);
     }
