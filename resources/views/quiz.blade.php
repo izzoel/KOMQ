@@ -11,7 +11,8 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Bungee&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Bungee&display=swap"
+        rel="stylesheet">
 
     <style>
         :root {
@@ -59,8 +60,15 @@
         }
 
         @keyframes pulseGlow {
-            from { transform: translate(-50%, -50%) scale(0.95); opacity: 0.75; }
-            to { transform: translate(-50%, -50%) scale(1.06); opacity: 1; }
+            from {
+                transform: translate(-50%, -50%) scale(0.95);
+                opacity: 0.75;
+            }
+
+            to {
+                transform: translate(-50%, -50%) scale(1.06);
+                opacity: 1;
+            }
         }
 
         /* Floating Navigation & Controls (Putih Bersih & Mudah Terbaca) */
@@ -182,8 +190,15 @@
         }
 
         @keyframes cardEntrance {
-            from { opacity: 0; transform: translateY(20px) scale(0.97); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
+            from {
+                opacity: 0;
+                transform: translateY(20px) scale(0.97);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
         }
 
         /* Timer Header Section */
@@ -232,8 +247,13 @@
         }
 
         @keyframes urgentPulse {
-            from { transform: scale(1); }
-            to { transform: scale(1.06); }
+            from {
+                transform: scale(1);
+            }
+
+            to {
+                transform: scale(1.06);
+            }
         }
 
         /* Neon Timer Bar */
@@ -369,8 +389,13 @@
         }
 
         @keyframes winnerPulse {
-            from { transform: scale(1); }
-            to { transform: scale(1.02); }
+            from {
+                transform: scale(1);
+            }
+
+            to {
+                transform: scale(1.02);
+            }
         }
 
         /* State Jawaban Salah */
@@ -397,14 +422,31 @@
         }
 
         .option-card.salah.shake {
-            animation: shakeAnim 0.45s cubic-bezier(.36,.07,.19,.97) both;
+            animation: shakeAnim 0.45s cubic-bezier(.36, .07, .19, .97) both;
         }
 
         @keyframes shakeAnim {
-            10%, 90% { transform: translateX(-3px); }
-            20%, 80% { transform: translateX(5px); }
-            30%, 50%, 70% { transform: translateX(-6px); }
-            40%, 60% { transform: translateX(6px); }
+
+            10%,
+            90% {
+                transform: translateX(-3px);
+            }
+
+            20%,
+            80% {
+                transform: translateX(5px);
+            }
+
+            30%,
+            50%,
+            70% {
+                transform: translateX(-6px);
+            }
+
+            40%,
+            60% {
+                transform: translateX(6px);
+            }
         }
 
         .option-card.dimmed {
@@ -446,6 +488,7 @@
                 padding: 6px 12px;
                 font-size: 0.78rem;
             }
+
             .btn-sound-toggle {
                 top: 12px;
                 right: 12px;
@@ -453,27 +496,34 @@
                 height: 40px;
                 font-size: 1.05rem;
             }
+
             .brand-pill {
                 padding: 6px 14px;
                 gap: 8px;
                 margin-top: 42px;
             }
+
             .brand-pill img {
                 height: 28px !important;
             }
+
             .header-title-gold {
                 font-size: 0.9rem;
             }
+
             .question-header {
                 padding: 12px 16px;
             }
+
             .question-body {
                 padding: 22px 18px;
             }
+
             .option-card {
                 padding: 12px 14px;
                 gap: 12px;
             }
+
             .option-letter {
                 width: 40px;
                 height: 40px;
@@ -507,7 +557,8 @@
             <div class="brand-pill">
                 <img src="{{ asset('images/diskominfo.png') }}" alt="Diskominfo Tapin" style="height: 36px;">
                 <div style="height: 26px; width: 1.5px; background: rgba(148, 163, 184, 0.45);"></div>
-                <img src="{{ asset('images/Tapin 69.svg') }}" alt="HUT Tapin 69" style="height: 36px; max-width: 105px; object-fit: contain;">
+                <img src="{{ asset('images/Tapin 69.svg') }}" alt="HUT Tapin 69"
+                    style="height: 36px; max-width: 105px; object-fit: contain;">
                 <div class="text-start">
                     <div class="header-subtitle">Dinas Kominfo Kab. Tapin</div>
                     <h1 class="header-title-gold">TAPIN EXPO 2026</h1>
@@ -548,11 +599,8 @@
                 <div class="row g-3">
                     @foreach ($pilihan as $label => $isi)
                         <div class="col-12 col-lg-6">
-                            <button type="button"
-                                class="option-card btn-jawab"
-                                data-kategori="{{ $kategori }}"
-                                data-id="{{ $quiz->id }}"
-                                data-jawab="{{ strtolower($label) }}">
+                            <button type="button" class="option-card btn-jawab" data-kategori="{{ $kategori }}"
+                                data-id="{{ $quiz->id }}" data-jawab="{{ strtolower($label) }}">
                                 <span class="option-letter">{{ $label }}</span>
                                 <span class="option-label">{{ $isi }}</span>
                                 <span class="option-indicator">
@@ -563,7 +611,8 @@
                     @endforeach
                 </div>
 
-                <div class="text-center mt-3 text-white fw-semibold" style="font-size: 0.9rem; letter-spacing: 0.3px; text-shadow: 0 1px 4px rgba(0,0,0,0.4);">
+                <div class="text-center mt-3 text-white fw-semibold"
+                    style="font-size: 0.9rem; letter-spacing: 0.3px; text-shadow: 0 1px 4px rgba(0,0,0,0.4);">
                     <i class="bi bi-lightbulb-fill text-warning me-1"></i>
                     Pilih jawaban paling tepat sebelum waktu habis untuk memenangkan doorprize!
                 </div>
@@ -767,7 +816,8 @@
                         const opsi = $(this).data('jawab');
                         if (opsi === kunci) {
                             $(this).addClass('benar');
-                            $(this).find('.option-indicator i').attr('class', 'bi bi-check-circle-fill');
+                            $(this).find('.option-indicator i').attr('class',
+                            'bi bi-check-circle-fill');
                         } else {
                             $(this).addClass('dimmed');
                         }
@@ -829,7 +879,8 @@
                             const opsi = $(this).data('jawab');
                             if (opsi === kunci) {
                                 $(this).addClass('benar');
-                                $(this).find('.option-indicator i').attr('class', 'bi bi-check-circle-fill');
+                                $(this).find('.option-indicator i').attr('class',
+                                    'bi bi-check-circle-fill');
                             } else {
                                 $(this).addClass('dimmed');
                             }
@@ -840,7 +891,9 @@
                             confetti({
                                 particleCount: 100,
                                 spread: 75,
-                                origin: { y: 0.6 }
+                                origin: {
+                                    y: 0.6
+                                }
                             });
                         } catch (err) {}
 
@@ -851,8 +904,8 @@
                                     confirmButton: 'btn btn-warning px-4 py-2 fw-bold text-dark rounded-pill shadow'
                                 },
                                 buttonsStyling: false,
-                                title: "Luar Biasa! Jawaban Benar!",
-                                html: "Selamat! Anda berhak memutar undian doorprize.<br><span style='color: #0369a1; font-weight: 700;' class='small d-inline-block mt-1'>Mengarahkan ke panggung doorprize...</span>",
+                                title: "Jawaban Benar!",
+                                html: "Selamat! Anda berhak mendapat doorprize.<br><span style='color: #0369a1; font-weight: 700;' class='small d-inline-block mt-1'>Mengarahkan ke panggung doorprize...</span>",
                                 icon: "success",
                                 confirmButtonText: '<i class="bi bi-gift-fill me-1"></i> Putar Doorprize Sekarang',
                                 timer: 4000,
@@ -872,10 +925,12 @@
                             const opsi = $(this).data('jawab');
                             if (opsi === kunci) {
                                 $(this).addClass('benar');
-                                $(this).find('.option-indicator i').attr('class', 'bi bi-check-circle-fill');
+                                $(this).find('.option-indicator i').attr('class',
+                                    'bi bi-check-circle-fill');
                             } else if (opsi === jawab) {
                                 $(this).addClass('salah shake');
-                                $(this).find('.option-indicator i').attr('class', 'bi bi-x-circle-fill');
+                                $(this).find('.option-indicator i').attr('class',
+                                    'bi bi-x-circle-fill');
                             } else {
                                 $(this).addClass('dimmed');
                             }
@@ -906,7 +961,9 @@
                     isAnswered = false;
                     $('.btn-jawab').removeClass('locked');
                     Swal.fire({
-                        customClass: { popup: 'cyber-swal' },
+                        customClass: {
+                            popup: 'cyber-swal'
+                        },
                         title: "Terjadi Kesalahan",
                         text: "Gagal memeriksa jawaban ke server. Silakan coba lagi.",
                         icon: "error"
