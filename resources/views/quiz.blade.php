@@ -503,7 +503,7 @@
                 margin-top: 42px;
             }
 
-            .brand-pill img {
+            .brand-pill > img {
                 height: 28px !important;
             }
 
@@ -554,14 +554,43 @@
 
         <!-- Header Brand Pill -->
         <div class="top-header">
-            <div class="brand-pill">
-                <img src="{{ asset('images/diskominfo.png') }}" alt="Diskominfo Tapin" style="height: 36px;">
-                <div style="height: 26px; width: 1.5px; background: rgba(148, 163, 184, 0.45);"></div>
+            <div class="brand-pill" style="padding: 10px 26px;">
+                <img src="{{ asset('images/diskominfo.png') }}" alt="Diskominfo Tapin" style="height: 40px;">
+                <div style="height: 36px; width: 1.5px; background: rgba(148, 163, 184, 0.45);"></div>
                 <img src="{{ asset('images/Tapin 69.svg') }}" alt="HUT Tapin 69"
-                    style="height: 36px; max-width: 105px; object-fit: contain;">
-                <div class="text-start">
-                    <div class="header-subtitle">Dinas Kominfo Kab. Tapin</div>
-                    <h1 class="header-title-gold">TAPIN EXPO 2026</h1>
+                    style="height: 40px; max-width: 110px; object-fit: contain;">
+                <div style="height: 36px; width: 1.5px; background: rgba(148, 163, 184, 0.45);"></div>
+                <div class="d-inline-flex align-items-center gap-2">
+                    <img src="{{ asset('images/logo-tapin-icon.png') }}" alt="Logo Kabupaten Tapin"
+                        style="height: 46px; width: auto; object-fit: contain;">
+                    <div class="text-center" style="line-height: 1;">
+                        <div
+                            style="font-size: 7px; font-weight: 800; letter-spacing: 1px; color: #0277bd; margin-bottom: 2px;">
+                            KABUPATEN
+                        </div>
+                        <img src="{{ asset('images/logo-tapin-text.png') }}" alt="Tapin"
+                            style="height: 18px; width: auto; display: block; margin: 0 auto 2px auto;">
+                        <div
+                            style="font-size: 3.5px; font-weight: 800; letter-spacing: 0.20px; color: #0277bd; line-height: 1.2;">
+                            <div>TAPIN BETAMBAH MAJU</div>
+                            <div>BANUA BETAMBAH BARAKAT</div>
+                            <div>WARGANYA TAMBAH BAIMAN</div>
+                        </div>
+                    </div>
+                </div>
+                <div style="height: 36px; width: 1.5px; background: rgba(148, 163, 184, 0.45);"></div>
+                <div class="d-inline-flex flex-column align-items-stretch" style="line-height: 1;">
+                    <div class="header-title-gold"
+                        style="font-size: 10px; letter-spacing: 0.8px; white-space: nowrap;">
+                        TAPIN EXPO
+                    </div>
+                    <div class="d-flex justify-content-between w-100 mt-1"
+                        style="font-family: 'Bungee', cursive; font-size: 1.5rem; line-height: 0.95;">
+                        <span class="header-title-gold" style="font-size: inherit; line-height: inherit;">2</span>
+                        <span class="header-title-gold" style="font-size: inherit; line-height: inherit;">0</span>
+                        <span class="header-title-gold" style="font-size: inherit; line-height: inherit;">2</span>
+                        <span class="header-title-gold" style="font-size: inherit; line-height: inherit;">6</span>
+                    </div>
                 </div>
             </div>
         </div>
