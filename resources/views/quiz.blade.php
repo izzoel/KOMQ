@@ -817,7 +817,7 @@
                         if (opsi === kunci) {
                             $(this).addClass('benar');
                             $(this).find('.option-indicator i').attr('class',
-                            'bi bi-check-circle-fill');
+                                'bi bi-check-circle-fill');
                         } else {
                             $(this).addClass('dimmed');
                         }
@@ -907,7 +907,7 @@
                                 title: "Jawaban Benar!",
                                 html: "Selamat! Anda berhak mendapat doorprize.<br><span style='color: #0369a1; font-weight: 700;' class='small d-inline-block mt-1'>Mengarahkan ke panggung doorprize...</span>",
                                 icon: "success",
-                                confirmButtonText: '<i class="bi bi-gift-fill me-1"></i> Putar Doorprize Sekarang',
+                                confirmButtonText: '<i class="bi bi-gift-fill me-1"></i> Klaim Hadiah Sekarang!',
                                 timer: 4000,
                                 timerProgressBar: true,
                                 allowOutsideClick: false,
