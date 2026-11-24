@@ -624,7 +624,7 @@
         <!-- Controls -->
         <div class="controls mb-4">
             @if ($totalStok > 0)
-                <button id="spinBtn" class="btn-3d">Putar Undian</button>
+                <button id="spinBtn" class="btn-3d">Klaim Hadiah</button>
                 <div class="text-white fw-semibold mt-2"
                     style="font-size: 0.9rem; letter-spacing: 0.4px; text-shadow: 0 1px 4px rgba(0,0,0,0.4);">
                     Tekan tombol mengambil doorprize Anda secara acak
@@ -784,7 +784,7 @@
             if (lower.includes('tumbler') || lower.includes('botol') || lower.includes('mug') || lower.includes('cangkir'))
                 return 'bi-cup-straw';
             if (lower.includes('buku') || lower.includes('pulpen') || lower.includes('notes'))
-            return 'bi-journal-bookmark-fill';
+                return 'bi-journal-bookmark-fill';
             if (lower.includes('kaos') || lower.includes('baju')) return 'bi-person-badge-fill';
             if (lower.includes('uang') || lower.includes('voucher') || lower.includes('saldo')) return 'bi-cash-coin';
             return 'bi-gift-fill';
