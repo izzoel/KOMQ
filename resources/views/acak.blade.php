@@ -689,14 +689,43 @@
 
         <!-- Top Header & Doorprize Status -->
         <div class="top-header">
-            <div class="brand-pill">
-                <img src="{{ asset('images/diskominfo.png') }}" alt="Diskominfo" style="height: 38px;">
-                <div style="height: 28px; width: 1.5px; background: rgba(148, 163, 184, 0.45);"></div>
+            <div class="brand-pill" style="padding: 10px 26px;">
+                <img src="{{ asset('images/diskominfo.png') }}" alt="Diskominfo" style="height: 40px;">
+                <div style="height: 36px; width: 1.5px; background: rgba(148, 163, 184, 0.45);"></div>
                 <img src="{{ asset('images/Tapin 69.svg') }}" alt="HUT Tapin 69"
-                    style="height: 38px; max-width: 110px; object-fit: contain;">
-                <div class="text-start">
-                    <div class="header-subtitle">Dinas Kominfo Kab. Tapin</div>
-                    <h1 class="header-title-gold">TAPIN EXPO 2026</h1>
+                    style="height: 40px; max-width: 110px; object-fit: contain;">
+                <div style="height: 36px; width: 1.5px; background: rgba(148, 163, 184, 0.45);"></div>
+                <div class="d-inline-flex align-items-center gap-2">
+                    <img src="{{ asset('images/logo-tapin-icon.png') }}" alt="Logo Kabupaten Tapin"
+                        style="height: 46px; width: auto; object-fit: contain;">
+                    <div class="text-center" style="line-height: 1;">
+                        <div
+                            style="font-size: 7px; font-weight: 800; letter-spacing: 1px; color: #0277bd; margin-bottom: 2px;">
+                            KABUPATEN
+                        </div>
+                        <img src="{{ asset('images/logo-tapin-text.png') }}" alt="Tapin"
+                            style="height: 18px; width: auto; display: block; margin: 0 auto 2px auto;">
+                        <div
+                            style="font-size: 3.5px; font-weight: 800; letter-spacing: 0.20px; color: #0277bd; line-height: 1.2;">
+                            <div>TAPIN BETAMBAH MAJU</div>
+                            <div>BANUA BETAMBAH BARAKAT</div>
+                            <div>WARGANYA TAMBAH BAIMAN</div>
+                        </div>
+                    </div>
+                </div>
+                <div style="height: 36px; width: 1.5px; background: rgba(148, 163, 184, 0.45);"></div>
+                <div class="d-inline-flex flex-column align-items-stretch" style="line-height: 1;">
+                    <div class="header-title-gold"
+                        style="font-size: 10px; letter-spacing: 0.8px; white-space: nowrap;">
+                        TAPIN EXPO
+                    </div>
+                    <div class="d-flex justify-content-between w-100 mt-1"
+                        style="font-family: 'Bungee', cursive; font-size: 1.5rem; line-height: 0.95;">
+                        <span class="header-title-gold" style="font-size: inherit; line-height: inherit;">2</span>
+                        <span class="header-title-gold" style="font-size: inherit; line-height: inherit;">0</span>
+                        <span class="header-title-gold" style="font-size: inherit; line-height: inherit;">2</span>
+                        <span class="header-title-gold" style="font-size: inherit; line-height: inherit;">6</span>
+                    </div>
                 </div>
             </div>
 
@@ -861,16 +890,26 @@
         // Helper fungsi pemilihan ikon dinamis per kategori
         function getCategoryIcon(name) {
             const lower = name.toLowerCase();
+            if (lower.includes('tapinku')) return 'bi-phone-fill';
+            if (lower.includes('pengaduan') || lower.includes('lapor') || lower.includes('aduan'))
+                return 'bi-megaphone-fill';
+            if (lower.includes('diskominfo') || lower.includes('kominfo')) return 'bi-broadcast';
+            if (lower.includes('profil')) return 'bi-person-vcard-fill';
+            if (lower.includes('layanan') || lower.includes('govem') || lower.includes('spbe'))
+                return 'bi-clipboard-check-fill';
+            if (lower.includes('fasilitas')) return 'bi-buildings-fill';
+            if (lower.includes('keamanan') || lower.includes('sehat')) return 'bi-shield-lock-fill';
+            if (lower.includes('transparasi') || lower.includes('keterbukaan') || lower.includes('ppid') || lower.includes(
+                    'informasi')) return 'bi-eye-fill';
+            if (lower.includes('budaya') || lower.includes('wisata') || lower.includes('seni')) return 'bi-palette-fill';
+            if (lower.includes('digital')) return 'bi-pc-display';
             if (lower.includes('program') || lower.includes('code') || lower.includes('dev')) return 'bi-code-slash';
             if (lower.includes('ai') || lower.includes('artificial') || lower.includes('intel') || lower.includes('data'))
                 return 'bi-cpu-fill';
             if (lower.includes('internet') || lower.includes('cyber') || lower.includes('web') || lower.includes('jaring'))
                 return 'bi-globe2';
             if (lower.includes('app') || lower.includes('super')) return 'bi-grid-1x2-fill';
-            if (lower.includes('govem') || lower.includes('spbe') || lower.includes('tapin') || lower.includes('layanan'))
-                return 'bi-building-fill-check';
-            if (lower.includes('lapor') || lower.includes('aduan')) return 'bi-megaphone-fill';
-            if (lower.includes('keamanan') || lower.includes('sehat')) return 'bi-shield-lock-fill';
+            if (lower.includes('tapin')) return 'bi-building-fill-check';
             return 'bi-patch-question-fill';
         }
 
